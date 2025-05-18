@@ -1,0 +1,23 @@
+#chart_values {
+    height: 300px !important;
+    width: 600px !important;
+}
+
+#chart_values_random {
+    height: 300px !important;
+    width: 600px !important;
+}
+
+#ohneRauschen {
+    height: 300px !important;
+    width: 600px !important;
+}
+
+#mitRauschen {
+    height: 300px !important;
+    width: 600px !important;
+}
+
+.r1 {
+    display: flex;
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Deep Learning ESA 2</title>
+
+  <!-- Import TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+  <!-- Import tfjs-vis -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+  <div>
+    <h1>Visualierung Funktion mit gleichverteilten Werten</h1>
+    <canvas id="chart_values"></canvas>
+  </div>
+
+  <div>
+    <h1>R1</h1>
+    <p>Die Datensätze: links ohne Rauschen, rechts mit Rauschen, Trainingsdaten und Testdaten farblich unterschieden jeweils zusammen in einem Diagramm</p>
+    <div class="r1">
+      <div>
+        <canvas id="ohneRauschen"></canvas>
+      </div>
+      <div>
+        <canvas id="mitRauschen"></canvas>
+      </div>
+    </div>
+    
+  </div>
+
+
+  
+
+  <!-- Import the main script file -->
+  <script src="script.js"></script>
+</body>
+</html>
