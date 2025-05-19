@@ -124,18 +124,22 @@ console.log(testdatenY);
 console.log("Testdaten Y verrauscht");
 console.log(testdatenY_rausch);
 
+console.log("Trainingsdaten");
+console.log(trainingsdaten);
+console.log("Trainingsdaten Y");
+console.log(trainingsdatenY);
 
 
+// JSON Objekte erzeugen
+let tempTrainingsdaten = trainingsdaten.map((value, index) => ({ x: value, y: trainingsdatenY[index]}));
+let jsonTrainingsdaten = tempTrainingsdaten;
+
+console.log(jsonTrainingsdaten);
 
 
-
-
-
-
-
-
-
-
+let jsonTestdaten;
+let jsonTrainingsdatenVerrauscht;
+let jsonTestdatenVerrauscht;
 
 
 
@@ -280,3 +284,131 @@ const ChartmitRauschen = new Chart(ctx_mitRauschen, {
 });
 
 
+
+
+async function print() {
+
+  // Create the model
+  const model = createModel();
+  tfvis.show.modelSummary({name: 'Model Summary'}, model);
+
+
+  // Load and plot the original input data that we are going to train on.
+  const values = jsonTrainingsdaten.map(d => ({
+    x: d.x,
+    y: d.y
+  }));
+  console.log("AUSGABE VALUES MY");
+  console.log(values);
+
+  tfvis.render.scatterplot(
+    {name: 'Regression FFNN'},
+    {values},
+    {
+      xLabel: 'x',
+      yLabel: 'y',
+      height: 300
+    }
+  );
+
+  // More code will be added below
+
+  // Convert the data to a form we can use for training.
+  const tensorData = convertToTensor(jsonTrainingsdaten);
+  const {inputs, labels} = tensorData;
+
+  // Train the model
+  await trainModel(model, inputs, labels);
+  console.log('Done Training');
+
+
+}
+
+document.addEventListener('DOMContentLoaded', print);
+
+
+
+
+// Modell instanzieren
+function createModel() {
+  // Create a sequential model
+  const model = tf.sequential();
+
+  // Add a single input layer
+  model.add(tf.layers.dense({inputShape: [1], units: 1, useBias: true}));
+
+  // Add an output layer
+  model.add(tf.layers.dense({units: 1, useBias: true}));
+
+  return model;
+}
+
+
+
+/**
+ * Convert the input data to tensors that we can use for machine
+ * learning. We will also do the important best practices of _shuffling_
+ * the data and _normalizing_ the data
+ * MPG on the y-axis.
+ */
+function convertToTensor(jsonTrainingsdaten) {
+  // Wrapping these calculations in a tidy will dispose any
+  // intermediate tensors.
+
+  return tf.tidy(() => {
+    // Step 1. Shuffle the data
+    tf.util.shuffle(jsonTrainingsdaten);
+
+    // Step 2. Convert data to Tensor
+    const inputs = jsonTrainingsdaten.map(d => d.x)
+    const labels = jsonTrainingsdaten.map(d => d.y);
+
+    const inputTensor = tf.tensor2d(inputs, [inputs.length, 1]);
+    const labelTensor = tf.tensor2d(labels, [labels.length, 1]);
+
+    //Step 3. Normalize the data to the range 0 - 1 using min-max scaling
+    //const inputMax = inputTensor.max();
+    //const inputMin = inputTensor.min();
+    //const labelMax = labelTensor.max();
+    //const labelMin = labelTensor.min();
+
+    //const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin));
+    //const normalizedLabels = labelTensor.sub(labelMin).div(labelMax.sub(labelMin));
+
+    return {
+      inputs: inputs,
+      labels: labels,
+      // Return the min/max bounds so we can use them later.
+      //inputMax,
+      //inputMin,
+      //labelMax,
+      //labelMin,
+    }
+  });
+}
+
+
+
+
+async function trainModel(model, inputs, labels) {
+  // Prepare the model for training.
+  model.compile({
+    optimizer: tf.train.adam(),
+    loss: tf.losses.meanSquaredError,
+    metrics: ['mse'],
+  });
+
+  const batchSize = 32;
+  const epochs = 50;
+
+  return await model.fit(inputs, labels, {
+    batchSize,
+    epochs,
+    shuffle: true,
+    callbacks: tfvis.show.fitCallbacks(
+      { name: 'Training Performance' },
+      ['loss', 'mse'],
+      { height: 200, callbacks: ['onEpochEnd'] }
+    )
+  });
+}
