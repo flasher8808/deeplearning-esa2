@@ -124,9 +124,12 @@ console.log("Trainingsdaten Y");
 console.log(trainingsdatenY);
 
 
+// Fake Daten erzeugen
+const fakeData = generateRandomNumbers(50, -2, 2);
+let fakeDataY = [];
 
-
-
+let jsonFakeData = fakeData.map((value, index) => ({ x: value, y: value*2}));
+console.log(jsonFakeData);
 
 
 
@@ -280,7 +283,7 @@ async function print() {
 
 
   // Load and plot the original input data that we are going to train on.
-  const values = jsonTrainingsdaten.map(d => ({
+  const values = jsonTestdaten.map(d => ({
     x: d.x,
     y: d.y
   }));
@@ -300,9 +303,10 @@ async function print() {
   // More code will be added below
 
   // Convert the data to a form we can use for training.
-  const tensorData = convertToTensor(jsonTrainingsdaten);
+  const tensorData = convertToTensor(jsonTrainingsdaten); //jsonTrainingsdaten
   const {inputs, labels} = tensorData;
 
+  const tensorDataTest = convertToTensor(jsonTestdaten);
   // Train the model
   await trainModel(model, inputs, labels);
   console.log('Done Training');
@@ -310,7 +314,7 @@ async function print() {
   // Make some predictions using the model and compare them to the
   // original data
   testModelTrain(model, jsonTrainingsdaten, tensorData);
-  testModelTest(model, jsonTrainingsdatenVerrauscht, tensorData);
+  testModelTest(model, jsonTestdaten, tensorDataTest);
 
   
 
@@ -330,21 +334,21 @@ function createModel() {
   model.add(tf.layers.dense({inputShape: [1], units: 1, useBias: true}));
 
   // Add hidden middle layer
-  model.add(tf.layers.dense({units: 100, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 200, activation: 'relu'}));
 
   // Add hidden middle layer
-  model.add(tf.layers.dense({units: 100, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 200, activation: 'relu'}));
 
-  /*
+  
   // Add hidden middle layer
-  model.add(tf.layers.dense({units: 50, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 100, activation: 'relu'}));
 
   // Add hidden middle layer
   model.add(tf.layers.dense({units: 30, activation: 'relu'}));
 
   // Add hidden middle layer
   model.add(tf.layers.dense({units: 20, activation: 'relu'}));
-  */
+  
 
   // Add an output layer
   model.add(tf.layers.dense({units: 1, activation: 'linear', useBias: true}));
@@ -455,14 +459,14 @@ function testModelTrain(model, inputData, normalizationData) {
     x: d.x, y: d.y,
   }));
 
-  console.log("originalPoints");
-  console.log(originalPoints);
-
+  //console.log("originalPoints");
+  //console.log(originalPoints);
+/*
   for (i = 0; i <= originalPoints.length; i++){
     console.log("x:");
     console.log(originalPoints[i]);
   }
-  
+  */
 
   const ctx_r2train = document.getElementById('r2-train').getContext('2d');
   const chartr2train = new Chart(ctx_r2train, {
