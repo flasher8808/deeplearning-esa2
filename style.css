@@ -50,6 +50,7 @@ html, body {
   background: #f2f2f2;
 }
 
+/*
 #chart_values {
     height: 300px !important;
     width: 600px !important;
@@ -59,13 +60,10 @@ html, body {
     height: 300px !important;
     width: 600px !important;
 }
+*/
 
-#r1-ohneRauschen {
-    height: 300px !important;
-    width: 600px !important;
-}
 
-#r1-mitRauschen {
+.dia {
     height: 300px !important;
     width: 600px !important;
 }

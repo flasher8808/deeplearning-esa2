@@ -455,6 +455,60 @@ function testModelTrain(model, inputData, normalizationData) {
     x: d.x, y: d.y,
   }));
 
+  console.log("originalPoints");
+  console.log(originalPoints);
+
+  for (i = 0; i <= originalPoints.length; i++){
+    console.log("x:");
+    console.log(originalPoints[i]);
+  }
+  
+
+  const ctx_r2train = document.getElementById('r2-train').getContext('2d');
+  const chartr2train = new Chart(ctx_r2train, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'original',
+        data: originalPoints.map((value, index) => ({ x: value.x, y: originalPoints[index].y })),
+        backgroundColor: 'rgba(192, 75, 75, 0.8)',
+        pointRadius: 3
+      },
+      {
+        label: 'predicted',
+        data: predictedPoints.map((value, index) => ({ x: value.x, y: predictedPoints[index].y })),
+        backgroundColor: 'rgba(75, 192, 192, 0.8)',
+        pointRadius: 3
+      }]
+    },
+    options: {
+      plugins: {
+        title: {
+            display: true,
+            text: 'Vorhersage ohne Rauschen Trainingsdaten'
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'bottom',
+          title: {
+            display: true,
+            text: 'x-Achse'
+          }
+        },
+        y: {
+          beginAtZero: true,
+          min: -2,
+          max: 3,
+          title: {
+            display: true,
+            text: 'y-Funktionswerte'
+          }
+        }
+      }
+    }
+  });
 
   tfvis.render.scatterplot(
     {name: 'Model Predictions vs Original Data Trainingdata'},
@@ -498,6 +552,52 @@ function testModelTest(model, inputData, normalizationData) {
   const originalPointsTest = inputData.map(d => ({
     x: d.x, y: d.y,
   }));
+
+  const ctx_r2test = document.getElementById('r2-test').getContext('2d');
+  const chartr2train = new Chart(ctx_r2test, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'original',
+        data: originalPointsTest.map((value, index) => ({ x: value.x, y: originalPointsTest[index].y })),
+        backgroundColor: 'rgba(192, 75, 75, 0.8)',
+        pointRadius: 3
+      },
+      {
+        label: 'predicted',
+        data: predictedPointsTest.map((value, index) => ({ x: value.x, y: predictedPointsTest[index].y })),
+        backgroundColor: 'rgba(75, 192, 192, 0.8)',
+        pointRadius: 3
+      }]
+    },
+    options: {
+      plugins: {
+        title: {
+            display: true,
+            text: 'Vorhersage mit Rauschen Testdaten'
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'bottom',
+          title: {
+            display: true,
+            text: 'x-Achse'
+          }
+        },
+        y: {
+          beginAtZero: true,
+          min: -2,
+          max: 3,
+          title: {
+            display: true,
+            text: 'y-Funktionswerte'
+          }
+        }
+      }
+    }
+  });
 
 
   tfvis.render.scatterplot(
