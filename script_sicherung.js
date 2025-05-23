@@ -11,7 +11,7 @@ function generateRandomNumbers(count, min, max) {
   return randomNumbers;
 }
 
-const count = 100;
+const count = 50;
 const min = -2;
 const max = 2;
 
@@ -109,20 +109,9 @@ console.log(jsonTrainingsdaten);
 console.log("Testdaten");
 console.log(jsonTestdaten);
 console.log("Trainingsdaten verrauscht");
-console.log(trainingsdatenY_rausch);
-
-
-
-console.log("Testdaten Y ");
-console.log(testdatenY);
-console.log("Testdaten Y verrauscht");
-console.log(testdatenY_rausch);
-
-console.log("Trainingsdaten");
-console.log(trainingsdaten);
-console.log("Trainingsdaten Y");
-console.log(trainingsdatenY);
-
+console.log(jsonTrainingsdatenVerrauscht);
+console.log("Testdaten verrauscht");
+console.log(jsonTestdatenVerrauscht);
 
 
 
@@ -132,7 +121,6 @@ console.log(trainingsdatenY);
 
 
 // Visualisierung Diagramm oben
-/*
 const ctx = document.getElementById('chart_values').getContext('2d');
 const myChart = new Chart(ctx, {
   type: 'scatter',
@@ -172,10 +160,9 @@ const myChart = new Chart(ctx, {
     }
   }
 });
-*/
 
 // Visualisierung Diagramm ohne Rauschen links
-const ctx_ohneRauschen = document.getElementById('r1-ohneRauschen').getContext('2d');
+const ctx_ohneRauschen = document.getElementById('ohneRauschen').getContext('2d');
 const ChartohneRauschen = new Chart(ctx_ohneRauschen, {
   type: 'scatter',
   data: {
@@ -223,7 +210,7 @@ const ChartohneRauschen = new Chart(ctx_ohneRauschen, {
 
 
 // Visualisierung Diagramm mit Rauschen rechts
-const ctx_mitRauschen = document.getElementById('r1-mitRauschen').getContext('2d');
+const ctx_mitRauschen = document.getElementById('mitRauschen').getContext('2d');
 const ChartmitRauschen = new Chart(ctx_mitRauschen, {
   type: 'scatter',
   data: {
