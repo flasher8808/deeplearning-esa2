@@ -1,65 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Deep Learning ESA 2</title>
+  <title>Deep Learning - EA 2</title>
 
   <!-- Import TensorFlow.js -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
   <!-- Import tfjs-vis -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Varela Round' rel='stylesheet'>
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-
-  <div>
-    <h1>Visualierung Funktion mit gleichverteilten Werten</h1>
-    <canvas id="chart_values"></canvas>
+  <div class="header">
+    <p>Modul Deep Learning - EA 2: Regression mit FFNN</p>
   </div>
-
-  <div>
-    <h1>R1</h1>
-    <p>Die Datensätze: links ohne Rauschen, rechts mit Rauschen, Trainingsdaten und Testdaten farblich unterschieden jeweils zusammen in einem Diagramm</p>
-    <div class="r1">
-      <div>
-        <canvas id="r1-ohneRauschen"></canvas>
-      </div>
-      <div>
-        <canvas id="r1-mitRauschen"></canvas>
-      </div>
+  <div class="center">
+    <!--
+    <div>
+      <h1>Visualierung Funktion mit gleichverteilten Werten</h1>
+      <canvas id="chart_values"></canvas>
     </div>
-    <h1>R2</h1>
-    <p>Die Vorhersage des Modells, das ohne Rauschen trainiert wurde y_unverrauscht(x), links auf den Trainingsdaten, rechts auf den Testdaten (beide ohne Rauschen)</p>
-    <div class="r2">
-      <div>
-        <canvas id="r2-ohneRauschen"></canvas>
-      </div>
-      <div>
-        <canvas id="r2-mitRauschen"></canvas>
-      </div>
-    </div>
-    <h1>R3</h1>
-    <p>Die Vorhersage Ihres besten Modells y_best(x) trainiert auf den verrauschten Daten, links auf den Trainingsdaten, rechts auf den Testdaten (alles mit Rauschen)</p>
-    <div class="r3">
-      <div>
-        <canvas id="ohneRauschen"></canvas>
-      </div>
-      <div>
-        <canvas id="mitRauschen"></canvas>
-      </div>
-    </div>
-    <h1>R4</h1>
-    <p>Die Vorhersage Ihres Overfit-Modells y_overfit(x) trainiert auf den verrauschten Daten, links auf den Trainingsdaten, rechts auf den Testdaten (alles mit Rauschen)</p>
-    <div class="r4">
-      <div>
-        <canvas id="ohneRauschen"></canvas>
-      </div>
-      <div>
-        <canvas id="mitRauschen"></canvas>
-      </div>
-    </div>
+    -->
     
+
+    <div>
+      <h1>R1</h1>
+      <p>Die Datensätze: links ohne Rauschen, rechts mit Rauschen, Trainingsdaten und Testdaten farblich unterschieden jeweils zusammen in einem Diagramm</p>
+      <div class="r1">
+        <div>
+          <canvas id="r1-ohneRauschen"></canvas>
+        </div>
+        <div>
+          <canvas id="r1-mitRauschen"></canvas>
+        </div>
+      </div>
+      <h1>R2</h1>
+      <p>Die Vorhersage des Modells, das ohne Rauschen trainiert wurde y_unverrauscht(x), links auf den Trainingsdaten, rechts auf den Testdaten (beide ohne Rauschen)</p>
+      <div class="r2">
+        <div>
+          <canvas id="r2-ohneRauschen"></canvas>
+        </div>
+        <div>
+          <canvas id="r2-mitRauschen"></canvas>
+        </div>
+      </div>
+      <h1>R3</h1>
+      <p>Die Vorhersage Ihres besten Modells y_best(x) trainiert auf den verrauschten Daten, links auf den Trainingsdaten, rechts auf den Testdaten (alles mit Rauschen)</p>
+      <div class="r3">
+        <div>
+          <canvas id="ohneRauschen"></canvas>
+        </div>
+        <div>
+          <canvas id="mitRauschen"></canvas>
+        </div>
+      </div>
+      <h1>R4</h1>
+      <p>Die Vorhersage Ihres Overfit-Modells y_overfit(x) trainiert auf den verrauschten Daten, links auf den Trainingsdaten, rechts auf den Testdaten (alles mit Rauschen)</p>
+      <div class="r4">
+        <div>
+          <canvas id="ohneRauschen"></canvas>
+        </div>
+        <div>
+          <canvas id="mitRauschen"></canvas>
+        </div>
+      </div>
+      
+    </div>
   </div>
+
+  
 
 
   

@@ -144,6 +144,7 @@ console.log(testdatenY_rausch);
 
 
 // Visualisierung Diagramm oben
+/*
 const ctx = document.getElementById('chart_values').getContext('2d');
 const myChart = new Chart(ctx, {
   type: 'scatter',
@@ -183,6 +184,7 @@ const myChart = new Chart(ctx, {
     }
   }
 });
+*/
 
 // Visualisierung Diagramm ohne Rauschen links
 const ctx_ohneRauschen = document.getElementById('r1-ohneRauschen').getContext('2d');
