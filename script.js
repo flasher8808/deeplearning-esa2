@@ -20,10 +20,6 @@ let yValues = [];
 for (let i = 0; i < count; i++) {
   yValues.push(calcYValue(xValues[i]));
 }
-//console.log("x-Werte:");
-//console.log(xValues);
-//console.log("y-Werte:");
-//console.log(yValues);
 
 // Y-Werte berechnen
 function calcYValue (xval) {
@@ -44,11 +40,6 @@ function combineArrays(arr1, arr2) {
     return arr1.map((value, index) => [value, arr2[index]]);
 }
 
-// ARRAYS ZUSAMMENFUEHREN
-
-//let combined = combineArrays(xValues, yValues);
-//console.log("Kombiniertes Array:");
-//console.log(combined);
 
 
 function shuffleArray(array) {
@@ -61,23 +52,16 @@ function shuffleArray(array) {
   }
 }
 
-//console.log("x-Werte original:");
-//console.log(xValues);
-
 
 // Array mischen
 shuffleArray(xValues);
 
-console.log("x-Werte gemischt:");
-console.log(xValues);
+
 
 let testdaten = xValues.slice(0, count/2);
 let trainingsdaten = xValues.slice(count/2);
 
-console.log("Testdaten:");
-console.log(testdaten);
-console.log("Trainingsdaten:");
-console.log(trainingsdaten);
+
 
 let testdatenY = [];
 let trainingsdatenY = [];
@@ -92,7 +76,6 @@ for (let i = 0; i < trainingsdaten.length; i++) {
 
 
 
-console.log("TEST RAUSCHEN");
 function generateNormalRandom(mu = 0, sigma = 1) {
     const u1 = Math.random();
     const u2 = Math.random();
@@ -114,32 +97,22 @@ let trainingsdatenY_rausch = addGaussianNoise(trainingsdatenY, variance);
 let testdatenY_rausch = addGaussianNoise(testdatenY, variance);
 
 
-console.log("Trainingsdaten verrauscht");
-console.log(trainingsdatenY_rausch);
-
-
-
-console.log("Testdaten Y ");
-console.log(testdatenY);
-console.log("Testdaten Y verrauscht");
-console.log(testdatenY_rausch);
-
-console.log("Trainingsdaten");
-console.log(trainingsdaten);
-console.log("Trainingsdaten Y");
-console.log(trainingsdatenY);
-
 
 // JSON Objekte erzeugen
-let tempTrainingsdaten = trainingsdaten.map((value, index) => ({ x: value, y: trainingsdatenY[index]}));
-let jsonTrainingsdaten = tempTrainingsdaten;
+let jsonTrainingsdaten = trainingsdaten.map((value, index) => ({ x: value, y: trainingsdatenY[index]}));
+let jsonTestdaten = testdaten.map((value, index) => ({ x: value, y: testdatenY[index]}));
+let jsonTrainingsdatenVerrauscht = trainingsdaten.map((value, index) => ({ x: value, y: trainingsdatenY_rausch[index]}));
+let jsonTestdatenVerrauscht = testdaten.map((value, index) => ({ x: value, y: testdatenY_rausch[index]}));
 
+console.log("Trainingsdaten");
 console.log(jsonTrainingsdaten);
+console.log("Testdaten");
+console.log(jsonTestdaten);
+console.log("Trainingsdaten verrauscht");
+console.log(jsonTrainingsdatenVerrauscht);
+console.log("Testdaten verrauscht");
+console.log(jsonTestdatenVerrauscht);
 
-
-let jsonTestdaten;
-let jsonTrainingsdatenVerrauscht;
-let jsonTestdatenVerrauscht;
 
 
 
@@ -323,6 +296,12 @@ async function print() {
   await trainModel(model, inputs, labels);
   console.log('Done Training');
 
+  // Make some predictions using the model and compare them to the
+  // original data
+  testModelTrain(model, jsonTrainingsdaten, tensorData);
+  testModelTest(model, jsonTrainingsdatenVerrauscht, tensorData);
+
+  
 
 }
 
@@ -339,8 +318,25 @@ function createModel() {
   // Add a single input layer
   model.add(tf.layers.dense({inputShape: [1], units: 1, useBias: true}));
 
+  // Add hidden middle layer
+  model.add(tf.layers.dense({units: 100, activation: 'relu'}));
+
+  // Add hidden middle layer
+  model.add(tf.layers.dense({units: 100, activation: 'relu'}));
+
+  /*
+  // Add hidden middle layer
+  model.add(tf.layers.dense({units: 50, activation: 'relu'}));
+
+  // Add hidden middle layer
+  model.add(tf.layers.dense({units: 30, activation: 'relu'}));
+
+  // Add hidden middle layer
+  model.add(tf.layers.dense({units: 20, activation: 'relu'}));
+  */
+
   // Add an output layer
-  model.add(tf.layers.dense({units: 1, useBias: true}));
+  model.add(tf.layers.dense({units: 1, activation: 'linear', useBias: true}));
 
   return model;
 }
@@ -369,22 +365,22 @@ function convertToTensor(jsonTrainingsdaten) {
     const labelTensor = tf.tensor2d(labels, [labels.length, 1]);
 
     //Step 3. Normalize the data to the range 0 - 1 using min-max scaling
-    //const inputMax = inputTensor.max();
-    //const inputMin = inputTensor.min();
-    //const labelMax = labelTensor.max();
-    //const labelMin = labelTensor.min();
+    const inputMax = inputTensor.max();
+    const inputMin = inputTensor.min();
+    const labelMax = labelTensor.max();
+    const labelMin = labelTensor.min();
 
     //const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin));
     //const normalizedLabels = labelTensor.sub(labelMin).div(labelMax.sub(labelMin));
 
     return {
-      inputs: inputs,
-      labels: labels,
+      inputs: inputTensor,
+      labels: labelTensor,
       // Return the min/max bounds so we can use them later.
-      //inputMax,
-      //inputMin,
-      //labelMax,
-      //labelMin,
+      inputMax,
+      inputMin,
+      labelMax,
+      labelMin,
     }
   });
 }
@@ -413,4 +409,93 @@ async function trainModel(model, inputs, labels) {
       { height: 200, callbacks: ['onEpochEnd'] }
     )
   });
+}
+
+
+function testModelTrain(model, inputData, normalizationData) {
+  const {inputMax, inputMin, labelMin, labelMax} = normalizationData;
+
+  // Generate predictions for a uniform range of numbers between 0 and 1;
+  // We un-normalize the data by doing the inverse of the min-max scaling
+  // that we did earlier.
+  const [xs, preds] = tf.tidy(() => {
+
+    const xsNorm = tf.linspace(0, 1, 100);
+    const predictions = model.predict(xsNorm.reshape([100, 1]));
+
+    const unNormXs = xsNorm
+      .mul(inputMax.sub(inputMin))
+      .add(inputMin);
+
+    const unNormPreds = predictions
+      .mul(labelMax.sub(labelMin))
+      .add(labelMin);
+
+    // Un-normalize the data
+    return [unNormXs.dataSync(), unNormPreds.dataSync()];
+  });
+
+
+  const predictedPoints = Array.from(xs).map((val, i) => {
+    return {x: val, y: preds[i]}
+  });
+
+  const originalPoints = inputData.map(d => ({
+    x: d.x, y: d.y,
+  }));
+
+
+  tfvis.render.scatterplot(
+    {name: 'Model Predictions vs Original Data Trainingdata'},
+    {values: [originalPoints, predictedPoints], series: ['original', 'predicted']},
+    {
+      xLabel: 'x',
+      yLabel: 'y',
+      height: 300
+    }
+  );
+}
+
+function testModelTest(model, inputData, normalizationData) {
+  const {inputMax, inputMin, labelMin, labelMax} = normalizationData;
+
+  // Generate predictions for a uniform range of numbers between 0 and 1;
+  // We un-normalize the data by doing the inverse of the min-max scaling
+  // that we did earlier.
+  const [xs, preds] = tf.tidy(() => {
+
+    const xsNorm = tf.linspace(0, 1, 100);
+    const predictions = model.predict(xsNorm.reshape([100, 1]));
+
+    const unNormXs = xsNorm
+      .mul(inputMax.sub(inputMin))
+      .add(inputMin);
+
+    const unNormPreds = predictions
+      .mul(labelMax.sub(labelMin))
+      .add(labelMin);
+
+    // Un-normalize the data
+    return [unNormXs.dataSync(), unNormPreds.dataSync()];
+  });
+
+
+  const predictedPointsTest = Array.from(xs).map((val, i) => {
+    return {x: val, y: preds[i]}
+  });
+
+  const originalPointsTest = inputData.map(d => ({
+    x: d.x, y: d.y,
+  }));
+
+
+  tfvis.render.scatterplot(
+    {name: 'Model Predictions vs Original Data Testdata'},
+    {values: [originalPointsTest, predictedPointsTest], series: ['original', 'predicted']},
+    {
+      xLabel: 'x',
+      yLabel: 'y',
+      height: 300
+    }
+  );
 }
