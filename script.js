@@ -185,7 +185,7 @@ const myChart = new Chart(ctx, {
 });
 
 // Visualisierung Diagramm ohne Rauschen links
-const ctx_ohneRauschen = document.getElementById('ohneRauschen').getContext('2d');
+const ctx_ohneRauschen = document.getElementById('r1-ohneRauschen').getContext('2d');
 const ChartohneRauschen = new Chart(ctx_ohneRauschen, {
   type: 'scatter',
   data: {
@@ -233,7 +233,7 @@ const ChartohneRauschen = new Chart(ctx_ohneRauschen, {
 
 
 // Visualisierung Diagramm mit Rauschen rechts
-const ctx_mitRauschen = document.getElementById('mitRauschen').getContext('2d');
+const ctx_mitRauschen = document.getElementById('r1-mitRauschen').getContext('2d');
 const ChartmitRauschen = new Chart(ctx_mitRauschen, {
   type: 'scatter',
   data: {

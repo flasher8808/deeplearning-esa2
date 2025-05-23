@@ -8,16 +8,19 @@
     width: 600px !important;
 }
 
-#ohneRauschen {
+#r1-ohneRauschen {
     height: 300px !important;
     width: 600px !important;
 }
 
-#mitRauschen {
+#r1-mitRauschen {
     height: 300px !important;
     width: 600px !important;
 }
 
-.r1 {
+.r1,
+.r2,
+.r3,
+.r4 {
     display: flex;
 }
