@@ -23,50 +23,89 @@
     </div>
     -->
     
-
-    <div>
-      <h1>R1</h1>
-      <p>Die Datensätze: links ohne Rauschen, rechts mit Rauschen, Trainingsdaten und Testdaten farblich unterschieden jeweils zusammen in einem Diagramm</p>
-      <div class="r1">
-        <div>
-          <canvas id="r1-ohneRauschen"></canvas>
-        </div>
-        <div>
-          <canvas id="r1-mitRauschen"></canvas>
-        </div>
+    <h1>R1</h1>
+    <p>Die Datensätze: links ohne Rauschen, rechts mit Rauschen, Trainingsdaten und Testdaten farblich unterschieden jeweils zusammen in einem Diagramm</p>
+    <div class="r1">
+      <div>
+        <canvas id="r1-ohneRauschen"></canvas>
       </div>
-      <h1>R2</h1>
-      <p>Die Vorhersage des Modells, das ohne Rauschen trainiert wurde y_unverrauscht(x), links auf den Trainingsdaten, rechts auf den Testdaten (beide ohne Rauschen)</p>
-      <div class="r2">
-        <div>
-          <canvas id="r2-ohneRauschen"></canvas>
-        </div>
-        <div>
-          <canvas id="r2-mitRauschen"></canvas>
-        </div>
+      <div>
+        <canvas id="r1-mitRauschen"></canvas>
       </div>
-      <h1>R3</h1>
-      <p>Die Vorhersage Ihres besten Modells y_best(x) trainiert auf den verrauschten Daten, links auf den Trainingsdaten, rechts auf den Testdaten (alles mit Rauschen)</p>
-      <div class="r3">
-        <div>
-          <canvas id="ohneRauschen"></canvas>
-        </div>
-        <div>
-          <canvas id="mitRauschen"></canvas>
-        </div>
-      </div>
-      <h1>R4</h1>
-      <p>Die Vorhersage Ihres Overfit-Modells y_overfit(x) trainiert auf den verrauschten Daten, links auf den Trainingsdaten, rechts auf den Testdaten (alles mit Rauschen)</p>
-      <div class="r4">
-        <div>
-          <canvas id="ohneRauschen"></canvas>
-        </div>
-        <div>
-          <canvas id="mitRauschen"></canvas>
-        </div>
-      </div>
-      
     </div>
+    <h1>R2</h1>
+    <p>Die Vorhersage des Modells, das ohne Rauschen trainiert wurde y_unverrauscht(x), links auf den Trainingsdaten, rechts auf den Testdaten (beide ohne Rauschen)</p>
+    <div class="r2">
+      <div>
+        <canvas id="r2-ohneRauschen"></canvas>
+      </div>
+      <div>
+        <canvas id="r2-mitRauschen"></canvas>
+      </div>
+    </div>
+    <h1>R3</h1>
+    <p>Die Vorhersage Ihres besten Modells y_best(x) trainiert auf den verrauschten Daten, links auf den Trainingsdaten, rechts auf den Testdaten (alles mit Rauschen)</p>
+    <div class="r3">
+      <div>
+        <canvas id="ohneRauschen"></canvas>
+      </div>
+      <div>
+        <canvas id="mitRauschen"></canvas>
+      </div>
+    </div>
+    <h1>R4</h1>
+    <p>Die Vorhersage Ihres Overfit-Modells y_overfit(x) trainiert auf den verrauschten Daten, links auf den Trainingsdaten, rechts auf den Testdaten (alles mit Rauschen)</p>
+    <div class="r4">
+      <div>
+        <canvas id="ohneRauschen"></canvas>
+      </div>
+      <div>
+        <canvas id="mitRauschen"></canvas>
+      </div>
+    </div>
+    
+    <div class="discussion">
+      <h1>Diskussion</h1>
+      <p>Bei Bildern, die aus dem Trainingsdatensatz stammen, erfolgte in allen Stichproben eine korrekte Klassifikation mit einer sehr hohen Wahrscheinlichkeit. Werden eigene Bilder von gleichen Objekten hochgeladen  (Beispiel: Goldfisch, Marienkäfer oder Sicherheitsnadel), dann wird ebenfalls mit sehr hoher Wahrscheinlichkeit die korrekte Klassifikation vorgenommen.
+      Sind verschiedene Objekte auf einem Bild zu erkennen, dann sinkt die Wahrscheinlichkeit einer korrekten Klassifikation erheblich und es kommt in einigen Fällen zu falschen Zuordnungen. Bei dem dritten Beispiel der korrekten Zuordnung beträgt die Wahrscheinlichkeit, dass es sich um eine Küste handelt nur knapp 19%. Es ist somit eine gewisse Unsicherheit damit verbunden. Bilder von / mit Personen sind besonders schwierig vom Modell zu klassifizieren - aus Datenschutzgründen soll kein Beispiel gezeigt werden.</p>
+      <p>Bei den falsch klassifizierten Bildern kann es unterschiedliche Gründe dafür geben:
+        <ul>
+          <li>Trainingsdaten enthalten nur ein bestimmtes Set an Objekten / Klassifikationen -> Wird ein Bild mit unbekannten Dingen gezeigt (Beispiel: Planet Erde), wird nur bestmöglichste Klasse gefunden was dennoch falsch ist</li>
+          <li>Die Trainingsdaten des Modells enthalten viele Bilder, auf denen nicht nur ein Objekt zu sehen ist, sondern mehrere und mit der Bezeichnung keine klare Zuordnung vorgenommen werden kann (Beispiel: n04116512_rubber_eraser.JPEG -> zusehen auch Bleistift, Notenbuch, Notenständer)</li>
+          <li>Manche Gegenstände sind in "falscher" Größe / Relation dargestellt (Beispiel: n04127249_safety_pin.JPEG)</li>
+        </ul>
+      </p>
+    </div>
+    <div class="doku">
+      <h1>Dokumentation</h1>
+      <h2>Technisch</h2>
+      <p>
+        Die Web-Anwendung basiert auf einer HTML-Datei, die mit CSS gestylt und JavaScript interaktiv erweitert wurde. Zusätzlich wurden folgende Frameworks verwendet:
+        <ul>
+          <li>ml5js: Klassifikation der Eingabebilder auf Basis des vortrainierten neuronalen Netzes</li>
+          <li>Plotly: Darstellung der Klassifikationsergebnisse in einem Diagramm</li>
+        </ul>
+      </p>
+      
+      <h2>Fachlich</h2>
+      <p>
+        Die Anwendung wurde iterativ entwickelt:
+        <ul>
+          <li>Entwicklung der HTML-Basis</li>
+          <li>Implementierung der Bild-Klassifizierung</li>
+          <li>Darstellung der Ergebnisse als Diagramm</li>
+          <li>Generierung / Aussuchen von Beispiel-Bildern</li>
+          <li>Optimierung der grafischen Darstellung</li>
+        </ul>
+        Verwendete Quellen / Tools:
+        <ul>
+          <li><a href="https://editor.p5js.org/" target="_blank">https://editor.p5js.org/</a></li>
+          <li><a href="https://www.w3schools.com/css/default.aspx" target="_blank">https://www.w3schools.com</a></li>
+          <li>Bei Problemen aller Art <a href="https://stackoverflow.com" target="_blank">https://stackoverflow.com</a></li>
+        </ul>
+      </p>
+    </div>
+
   </div>
 
   

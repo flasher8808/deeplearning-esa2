@@ -25,6 +25,7 @@ html, body {
   min-width: 1220px;
   max-width: 1220px;
   margin: auto;
+  margin-bottom: 100px;
   width: 95%;
   border-left: 2px solid #171a6e;
   border-bottom: 2px solid #171a6e;
