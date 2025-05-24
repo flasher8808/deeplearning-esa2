@@ -1,5 +1,6 @@
 //console.log('Hello TensorFlow');
 
+
 // Zufallszahlen erzeugen
 function generateRandomNumbers(count, min, max) {
   const randomNumbers = [];
@@ -177,7 +178,7 @@ const myChart = new Chart(ctx, {
 });
 */
 
-// Visualisierung Diagramm ohne Rauschen links
+// R1 - Visualisierung Diagramm ohne Rauschen links
 const ctx_ohneRauschen = document.getElementById('r1-ohneRauschen').getContext('2d');
 const ChartohneRauschen = new Chart(ctx_ohneRauschen, {
   type: 'scatter',
@@ -225,7 +226,7 @@ const ChartohneRauschen = new Chart(ctx_ohneRauschen, {
 });
 
 
-// Visualisierung Diagramm mit Rauschen rechts
+// R1 - Visualisierung Diagramm mit Rauschen rechts
 const ctx_mitRauschen = document.getElementById('r1-mitRauschen').getContext('2d');
 const ChartmitRauschen = new Chart(ctx_mitRauschen, {
   type: 'scatter',
@@ -275,11 +276,11 @@ const ChartmitRauschen = new Chart(ctx_mitRauschen, {
 
 
 
-async function print() {
+async function r2print() {
 
   // Create the model
-  const model = createModel();
-  tfvis.show.modelSummary({name: 'Model Summary'}, model);
+  const model = r2createModel();
+  tfvis.show.modelSummary({name: 'R2 Model Summary'}, model);
 
 
   // Load and plot the original input data that we are going to train on.
@@ -291,7 +292,7 @@ async function print() {
   console.log(values);
 
   tfvis.render.scatterplot(
-    {name: 'Regression FFNN'},
+    {name: 'R2 Regression FFNN'},
     {values},
     {
       xLabel: 'x',
@@ -308,25 +309,27 @@ async function print() {
 
   const tensorDataTest = convertToTensor(jsonTestdaten);
   // Train the model
-  await trainModel(model, inputs, labels);
-  console.log('Done Training');
+  await r2trainModel(model, inputs, labels);
+  console.log('R2 Done Training');
 
   // Make some predictions using the model and compare them to the
   // original data
-  testModelTrain(model, jsonTrainingsdaten, tensorData);
-  testModelTest(model, jsonTestdaten, tensorDataTest);
+  r2testModelTrain(model, jsonTrainingsdaten, tensorData);
+  r2testModelTest(model, jsonTestdaten, tensorDataTest);
 
   
 
 }
 
-document.addEventListener('DOMContentLoaded', print);
+
+// Aufruf R2
+document.addEventListener('DOMContentLoaded', r2print);
 
 
 
 
 // Modell instanzieren
-function createModel() {
+function r2createModel() {
   // Create a sequential model
   const model = tf.sequential();
 
@@ -339,7 +342,6 @@ function createModel() {
   // Add hidden middle layer
   model.add(tf.layers.dense({units: 200, activation: 'relu'}));
 
-  
   // Add hidden middle layer
   model.add(tf.layers.dense({units: 100, activation: 'relu'}));
 
@@ -402,8 +404,8 @@ function convertToTensor(jsonTrainingsdaten) {
 
 
 
-
-async function trainModel(model, inputs, labels) {
+/* ORIGINAL
+async function r2trainModel(model, inputs, labels) {
   // Prepare the model for training.
   model.compile({
     optimizer: tf.train.adam(),
@@ -411,7 +413,7 @@ async function trainModel(model, inputs, labels) {
     metrics: ['mse'],
   });
 
-  const batchSize = 32;
+  const batchSize = 8;
   const epochs = 50;
 
   return await model.fit(inputs, labels, {
@@ -419,15 +421,57 @@ async function trainModel(model, inputs, labels) {
     epochs,
     shuffle: true,
     callbacks: tfvis.show.fitCallbacks(
-      { name: 'Training Performance' },
+      { name: 'R2 Training Performance' },
       ['loss', 'mse'],
       { height: 200, callbacks: ['onEpochEnd'] }
     )
   });
 }
+*/
+
+async function r2trainModel(model, inputs, labels) {
+  model.compile({
+    optimizer: tf.train.adam(),
+    loss: tf.losses.meanSquaredError,
+    metrics: ['mse'],
+  });
+
+  const batchSize = 8;
+  const epochs = 50;
+
+  const updateProgressBar = (epoch) => {
+    const progress = ((epoch + 1) / epochs) * 100;
+    document.getElementById('progress-bar').style.width = progress + '%';
+    document.getElementById('progress-text').innerText = 'Training zu ' + progress.toFixed(0) + '% abgeschlossen';
+    if (progress == 100){
+      document.getElementById('progress-container').style.display = "none";
+      document.getElementById('r2-train').style.display = "block";
+      document.getElementById('r2-test').style.display = "block";
+    }
+    
+  };
+
+  const trainingCallbacks = tfvis.show.fitCallbacks(
+    { name: 'R2 Training Performance' },
+    ['loss', 'mse'],
+    { height: 200, callbacks: ['onEpochEnd'] }
+  );
+
+  return await model.fit(inputs, labels, {
+    batchSize,
+    epochs,
+    shuffle: true,
+    callbacks: {
+      onEpochEnd: async (epoch, logs) => {
+        updateProgressBar(epoch);
+        await trainingCallbacks.onEpochEnd(epoch, logs);  // Sicherstellen, dass der tfvis Callback korrekt aufgerufen wird.
+      }
+    }
+  });
+}
 
 
-function testModelTrain(model, inputData, normalizationData) {
+function r2testModelTrain(model, inputData, normalizationData) {
   const {inputMax, inputMin, labelMin, labelMax} = normalizationData;
 
   // Generate predictions for a uniform range of numbers between 0 and 1;
@@ -489,7 +533,7 @@ function testModelTrain(model, inputData, normalizationData) {
       plugins: {
         title: {
             display: true,
-            text: 'Vorhersage ohne Rauschen Trainingsdaten'
+            text: 'Vorhersage ohne Rauschen auf Trainingsdaten'
         }
       },
       scales: {
@@ -515,7 +559,7 @@ function testModelTrain(model, inputData, normalizationData) {
   });
 
   tfvis.render.scatterplot(
-    {name: 'Model Predictions vs Original Data Trainingdata'},
+    {name: 'R2 Model Predictions vs Original Data Trainingdata'},
     {values: [originalPoints, predictedPoints], series: ['original', 'predicted']},
     {
       xLabel: 'x',
@@ -525,7 +569,7 @@ function testModelTrain(model, inputData, normalizationData) {
   );
 }
 
-function testModelTest(model, inputData, normalizationData) {
+function r2testModelTest(model, inputData, normalizationData) {
   const {inputMax, inputMin, labelMin, labelMax} = normalizationData;
 
   // Generate predictions for a uniform range of numbers between 0 and 1;
@@ -578,7 +622,7 @@ function testModelTest(model, inputData, normalizationData) {
       plugins: {
         title: {
             display: true,
-            text: 'Vorhersage mit Rauschen Testdaten'
+            text: 'Vorhersage ohne Rauschen auf Testdaten'
         }
       },
       scales: {
@@ -605,7 +649,307 @@ function testModelTest(model, inputData, normalizationData) {
 
 
   tfvis.render.scatterplot(
-    {name: 'Model Predictions vs Original Data Testdata'},
+    {name: 'R2 Model Predictions vs Original Data Testdata'},
+    {values: [originalPointsTest, predictedPointsTest], series: ['original', 'predicted']},
+    {
+      xLabel: 'x',
+      yLabel: 'y',
+      height: 300
+    }
+  );
+}
+
+
+
+
+
+
+
+// R3
+
+document.addEventListener('DOMContentLoaded', r3print);
+
+async function r3print() {
+
+  // Create the model
+  const r3model = r3createModel();
+  tfvis.show.modelSummary({name: 'R3 Model Summary'}, r3model);
+
+
+  // Load and plot the original input data that we are going to train on.
+  const values = jsonTestdatenVerrauscht.map(d => ({
+    x: d.x,
+    y: d.y
+  }));
+  console.log("R3 AUSGABE VALUES MY");
+  console.log(values);
+
+  tfvis.render.scatterplot(
+    {name: 'R3 Regression FFNN'},
+    {values},
+    {
+      xLabel: 'x',
+      yLabel: 'y',
+      height: 300
+    }
+  );
+
+  // More code will be added below
+
+  // Convert the data to a form we can use for training.
+  const r3tensorData = convertToTensor(jsonTrainingsdatenVerrauscht); //jsonTrainingsdaten
+  const {inputs, labels} = r3tensorData;
+
+  const r3tensorDataTest = convertToTensor(jsonTestdatenVerrauscht);
+  // Train the model
+  await r3trainModel(r3model, inputs, labels);
+  console.log('R3 Done Training');
+
+  // Make some predictions using the model and compare them to the
+  // original data
+  r3testModelTrain(r3model, jsonTrainingsdatenVerrauscht, r3tensorData);
+  r3testModelTest(r3model, jsonTestdatenVerrauscht, r3tensorDataTest);
+
+  
+
+}
+
+// Modell instanzieren
+function r3createModel() {
+  // Create a sequential model
+  const r3model = tf.sequential();
+
+  // Add a single input layer
+  r3model.add(tf.layers.dense({inputShape: [1], units: 1, useBias: true}));
+
+  // Add hidden middle layer
+  r3model.add(tf.layers.dense({units: 200, activation: 'relu'}));
+
+  // Add hidden middle layer
+  r3model.add(tf.layers.dense({units: 200, activation: 'relu'}));
+
+  // Add hidden middle layer
+  r3model.add(tf.layers.dense({units: 100, activation: 'relu'}));
+
+  // Add hidden middle layer
+  r3model.add(tf.layers.dense({units: 30, activation: 'relu'}));
+
+  // Add hidden middle layer
+  r3model.add(tf.layers.dense({units: 20, activation: 'relu'}));
+  
+
+  // Add an output layer
+  r3model.add(tf.layers.dense({units: 1, activation: 'linear', useBias: true}));
+
+  return r3model;
+}
+
+
+
+async function r3trainModel(model, inputs, labels) {
+  // Prepare the model for training.
+  model.compile({
+    optimizer: tf.train.adam(),
+    loss: tf.losses.meanSquaredError,
+    metrics: ['mse'],
+  });
+
+  const batchSize = 8;
+  const epochs = 50;
+
+  return await model.fit(inputs, labels, {
+    batchSize,
+    epochs,
+    shuffle: true,
+    callbacks: tfvis.show.fitCallbacks(
+      { name: 'R3 Training Performance' },
+      ['loss', 'mse'],
+      { height: 200, callbacks: ['onEpochEnd'] }
+    )
+  });
+}
+
+
+function r3testModelTrain(model, inputData, normalizationData) {
+  const {inputMax, inputMin, labelMin, labelMax} = normalizationData;
+
+  // Generate predictions for a uniform range of numbers between 0 and 1;
+  // We un-normalize the data by doing the inverse of the min-max scaling
+  // that we did earlier.
+  const [xs, preds] = tf.tidy(() => {
+
+    const xsNorm = tf.linspace(0, 1, 100);
+    const predictions = model.predict(xsNorm.reshape([100, 1]));
+
+    const unNormXs = xsNorm
+      .mul(inputMax.sub(inputMin))
+      .add(inputMin);
+
+    const unNormPreds = predictions
+      .mul(labelMax.sub(labelMin))
+      .add(labelMin);
+
+    // Un-normalize the data
+    return [unNormXs.dataSync(), unNormPreds.dataSync()];
+  });
+
+
+  const predictedPoints = Array.from(xs).map((val, i) => {
+    return {x: val, y: preds[i]}
+  });
+
+  const originalPoints = inputData.map(d => ({
+    x: d.x, y: d.y,
+  }));
+
+  //console.log("originalPoints");
+  //console.log(originalPoints);
+/*
+  for (i = 0; i <= originalPoints.length; i++){
+    console.log("x:");
+    console.log(originalPoints[i]);
+  }
+  */
+
+  const ctx_r3train = document.getElementById('r3-train').getContext('2d');
+  const chartr3train = new Chart(ctx_r3train, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'original',
+        data: originalPoints.map((value, index) => ({ x: value.x, y: originalPoints[index].y })),
+        backgroundColor: 'rgba(192, 75, 75, 0.8)',
+        pointRadius: 3
+      },
+      {
+        label: 'predicted',
+        data: predictedPoints.map((value, index) => ({ x: value.x, y: predictedPoints[index].y })),
+        backgroundColor: 'rgba(75, 192, 192, 0.8)',
+        pointRadius: 3
+      }]
+    },
+    options: {
+      plugins: {
+        title: {
+            display: true,
+            text: 'Vorhersage mit Rauschen auf Trainingsdaten'
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'bottom',
+          title: {
+            display: true,
+            text: 'x-Achse'
+          }
+        },
+        y: {
+          beginAtZero: true,
+          min: -2,
+          max: 3,
+          title: {
+            display: true,
+            text: 'y-Funktionswerte'
+          }
+        }
+      }
+    }
+  });
+
+  tfvis.render.scatterplot(
+    {name: 'R3 Model Predictions vs Original Data Trainingdata'},
+    {values: [originalPoints, predictedPoints], series: ['original', 'predicted']},
+    {
+      xLabel: 'x',
+      yLabel: 'y',
+      height: 300
+    }
+  );
+}
+
+
+function r3testModelTest(model, inputData, normalizationData) {
+  const {inputMax, inputMin, labelMin, labelMax} = normalizationData;
+
+  // Generate predictions for a uniform range of numbers between 0 and 1;
+  // We un-normalize the data by doing the inverse of the min-max scaling
+  // that we did earlier.
+  const [xs, preds] = tf.tidy(() => {
+
+    const xsNorm = tf.linspace(0, 1, 100);
+    const predictions = model.predict(xsNorm.reshape([100, 1]));
+
+    const unNormXs = xsNorm
+      .mul(inputMax.sub(inputMin))
+      .add(inputMin);
+
+    const unNormPreds = predictions
+      .mul(labelMax.sub(labelMin))
+      .add(labelMin);
+
+    // Un-normalize the data
+    return [unNormXs.dataSync(), unNormPreds.dataSync()];
+  });
+
+
+  const predictedPointsTest = Array.from(xs).map((val, i) => {
+    return {x: val, y: preds[i]}
+  });
+
+  const originalPointsTest = inputData.map(d => ({
+    x: d.x, y: d.y,
+  }));
+
+  const ctx_r3test = document.getElementById('r3-test').getContext('2d');
+  const chartr3train = new Chart(ctx_r3test, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'original',
+        data: originalPointsTest.map((value, index) => ({ x: value.x, y: originalPointsTest[index].y })),
+        backgroundColor: 'rgba(192, 75, 75, 0.8)',
+        pointRadius: 3
+      },
+      {
+        label: 'predicted',
+        data: predictedPointsTest.map((value, index) => ({ x: value.x, y: predictedPointsTest[index].y })),
+        backgroundColor: 'rgba(75, 192, 192, 0.8)',
+        pointRadius: 3
+      }]
+    },
+    options: {
+      plugins: {
+        title: {
+            display: true,
+            text: 'Vorhersage mit Rauschen auf Testdaten'
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'bottom',
+          title: {
+            display: true,
+            text: 'x-Achse'
+          }
+        },
+        y: {
+          beginAtZero: true,
+          min: -2,
+          max: 3,
+          title: {
+            display: true,
+            text: 'y-Funktionswerte'
+          }
+        }
+      }
+    }
+  });
+
+
+  tfvis.render.scatterplot(
+    {name: 'R3 Model Predictions vs Original Data Testdata'},
     {values: [originalPointsTest, predictedPointsTest], series: ['original', 'predicted']},
     {
       xLabel: 'x',

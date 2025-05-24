@@ -27,6 +27,8 @@
     </div>
     -->
     
+
+    <img src="loading.png" alt="loading" id="img-loading" style="display: none;">
     <h1>R1</h1>
     <p>Die Datensätze: links ohne Rauschen, rechts mit Rauschen, Trainingsdaten und Testdaten farblich unterschieden jeweils zusammen in einem Diagramm</p>
     <div class="r1">
@@ -39,22 +41,29 @@
     </div>
     <h1>R2</h1>
     <p>Die Vorhersage des Modells, das ohne Rauschen trainiert wurde y_unverrauscht(x), links auf den Trainingsdaten, rechts auf den Testdaten (beide ohne Rauschen)</p>
+    <div>
+      <div id="progress-container">
+        <div id="progress-bar">
+        </div>
+        <p id="progress-text">0% abgeschlossen</p>
+      </div> 
+    </div>
     <div class="r2">
       <div>
-        <canvas class="dia" id="r2-train"></canvas>
+        <canvas class="dia" id="r2-train" style="display: none;"></canvas>
       </div>
       <div>
-        <canvas class="dia" id="r2-test"></canvas>
+        <canvas class="dia" id="r2-test" style="display: none;"></canvas>
       </div>
     </div>
     <h1>R3</h1>
     <p>Die Vorhersage Ihres besten Modells y_best(x) trainiert auf den verrauschten Daten, links auf den Trainingsdaten, rechts auf den Testdaten (alles mit Rauschen)</p>
     <div class="r3">
       <div>
-        <canvas id="ohneRauschen"></canvas>
+        <canvas class="dia" id="r3-train"></canvas>
       </div>
       <div>
-        <canvas id="mitRauschen"></canvas>
+        <canvas class="dia" id="r3-test"></canvas>
       </div>
     </div>
     <h1>R4</h1>
