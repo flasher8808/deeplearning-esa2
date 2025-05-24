@@ -745,7 +745,7 @@ function r3createModel() {
 }
 
 
-
+/* ORIGINAL
 async function r3trainModel(model, inputs, labels) {
   // Prepare the model for training.
   model.compile({
@@ -768,7 +768,48 @@ async function r3trainModel(model, inputs, labels) {
     )
   });
 }
+*/
 
+async function r3trainModel(model, inputs, labels) {
+  model.compile({
+    optimizer: tf.train.adam(),
+    loss: tf.losses.meanSquaredError,
+    metrics: ['mse'],
+  });
+
+  const batchSize = 8;
+  const epochs = 50;
+
+  const updateProgressBar = (epoch) => {
+    const progress = ((epoch + 1) / epochs) * 100;
+    document.getElementById('r3-progress-bar').style.width = progress + '%';
+    document.getElementById('r3-progress-text').innerText = 'Training zu ' + progress.toFixed(0) + '% abgeschlossen';
+    if (progress == 100){
+      document.getElementById('r3-progress-container').style.display = "none";
+      document.getElementById('r3-train').style.display = "block";
+      document.getElementById('r3-test').style.display = "block";
+    }
+    
+  };
+
+  const trainingCallbacks = tfvis.show.fitCallbacks(
+    { name: 'R3 Training Performance' },
+    ['loss', 'mse'],
+    { height: 200, callbacks: ['onEpochEnd'] }
+  );
+
+  return await model.fit(inputs, labels, {
+    batchSize,
+    epochs,
+    shuffle: true,
+    callbacks: {
+      onEpochEnd: async (epoch, logs) => {
+        updateProgressBar(epoch);
+        await trainingCallbacks.onEpochEnd(epoch, logs);  // Sicherstellen, dass der tfvis Callback korrekt aufgerufen wird.
+      }
+    }
+  });
+}
 
 function r3testModelTrain(model, inputData, normalizationData) {
   const {inputMax, inputMin, labelMin, labelMax} = normalizationData;
