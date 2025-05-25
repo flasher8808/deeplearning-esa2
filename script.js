@@ -317,7 +317,7 @@ async function r2print() {
   r2testModelTrain(model, jsonTrainingsdaten, tensorData);
   r2testModelTest(model, jsonTestdaten, tensorDataTest);
 
-  
+  r3print();
 
 }
 
@@ -350,7 +350,7 @@ function r2createModel() {
 
   // Add hidden middle layer
   model.add(tf.layers.dense({units: 20, activation: 'relu'}));
-  
+
 
   // Add an output layer
   model.add(tf.layers.dense({units: 1, activation: 'linear', useBias: true}));
@@ -430,14 +430,19 @@ async function r2trainModel(model, inputs, labels) {
 */
 
 async function r2trainModel(model, inputs, labels) {
+  const learningRate = 0.01;
+  const beta1 = 0.7;  //0.9
+  const beta2 = 0.9;  //0.999
+  const epsilon = 0.00000001;
+
   model.compile({
-    optimizer: tf.train.adam(),
+    optimizer: tf.train.adam(learningRate, beta1, beta2, epsilon),
     loss: tf.losses.meanSquaredError,
     metrics: ['mse'],
   });
 
-  const batchSize = 8;
-  const epochs = 50;
+  const batchSize = 16;
+  const epochs = 80;
 
   const updateProgressBar = (epoch) => {
     const progress = ((epoch + 1) / epochs) * 100;
@@ -667,7 +672,9 @@ function r2testModelTest(model, inputData, normalizationData) {
 
 // R3
 
-document.addEventListener('DOMContentLoaded', r3print);
+//document.addEventListener('DOMContentLoaded', r3print);
+
+
 
 async function r3print() {
 
@@ -771,8 +778,10 @@ async function r3trainModel(model, inputs, labels) {
 */
 
 async function r3trainModel(model, inputs, labels) {
+  const learningRate = 0.01;
+
   model.compile({
-    optimizer: tf.train.adam(),
+    optimizer: tf.train.adam(learningRate),
     loss: tf.losses.meanSquaredError,
     metrics: ['mse'],
   });

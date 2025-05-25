@@ -62,6 +62,21 @@ html, body {
 }
 */
 
+#r2-train {
+    display: none;
+}
+
+#r2-test {
+    display: none;
+}
+
+#r3-train {
+    display: none;
+}
+
+#r3-test {
+    display: none;
+}
 
 #progress-container {
     width: 100%;
