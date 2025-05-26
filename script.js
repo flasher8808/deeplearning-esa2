@@ -24,6 +24,7 @@ for (let i = 0; i < count; i++) {
 
 // Y-Werte berechnen
 function calcYValue (xval) {
+  //let yval = xval*xval*xval;
   let yval = 0.5*(xval+0.8)*(xval+1.8)*(xval-0.2)*(xval-0.3)*(xval-1.9)+1;
   // Funktion y(x) = 0.5*(x+0.8)*(x+1.8)*(x-0.2)*(x-0.3)*(x-1.9)+1
   //console.log(yval);
@@ -291,6 +292,7 @@ async function r2print() {
   console.log("AUSGABE VALUES MY");
   console.log(values);
 
+  /* Diagramm des tvfis
   tfvis.render.scatterplot(
     {name: 'R2 Regression FFNN'},
     {values},
@@ -300,6 +302,7 @@ async function r2print() {
       height: 300
     }
   );
+  */
 
   // More code will be added below
 
@@ -317,7 +320,7 @@ async function r2print() {
   r2testModelTrain(model, jsonTrainingsdaten, tensorData);
   r2testModelTest(model, jsonTestdaten, tensorDataTest);
 
-  r3print();
+  //r3print();
 
 }
 
@@ -334,26 +337,51 @@ function r2createModel() {
   const model = tf.sequential();
 
   // Add a single input layer
-  model.add(tf.layers.dense({inputShape: [1], units: 1, useBias: true}));
+  model.add(tf.layers.dense({inputShape: [1], units: 256, activation: 'relu'}));
 
   // Add hidden middle layer
-  model.add(tf.layers.dense({units: 200, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 256, activation: 'relu'}));
 
   // Add hidden middle layer
-  model.add(tf.layers.dense({units: 200, activation: 'relu'}));
+  //model.add(tf.layers.dense({units: 50, activation: 'sigmoid'}));
 
   // Add hidden middle layer
-  model.add(tf.layers.dense({units: 100, activation: 'relu'}));
+  //model.add(tf.layers.dense({units: 10, activation: 'relu'}));
 
   // Add hidden middle layer
-  model.add(tf.layers.dense({units: 30, activation: 'relu'}));
+  //model.add(tf.layers.dense({units: 1024, activation: 'relu'}));
+
+
+/* ORIGINAL
+  // Add a single input layer
+  model.add(tf.layers.dense({inputShape: [1], units: 128, activation: 'relu'}));
 
   // Add hidden middle layer
-  model.add(tf.layers.dense({units: 20, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 64, activation: 'relu'}));
 
+  // Add hidden middle layer
+  model.add(tf.layers.dense({units: 64, activation: 'relu'}));
+
+  // Add hidden middle layer
+  model.add(tf.layers.dense({units: 32, activation: 'relu'}));
+
+  // Add hidden middle layer
+  model.add(tf.layers.dense({units: 16, activation: 'relu'}));
+  */
+
+  /*
+  // Add hidden middle layer
+  model.add(tf.layers.dense({units: 100, activation: 'sigmoid', useBias: true}));
+
+  // Add hidden middle layer
+  model.add(tf.layers.dense({units: 30, activation: 'sigmoid', useBias: true}));
+
+  // Add hidden middle layer
+  model.add(tf.layers.dense({units: 20, activation: 'sigmoid', useBias: true}));
+  */
 
   // Add an output layer
-  model.add(tf.layers.dense({units: 1, activation: 'linear', useBias: true}));
+  model.add(tf.layers.dense({units: 1}));
 
   return model;
 }
@@ -430,19 +458,19 @@ async function r2trainModel(model, inputs, labels) {
 */
 
 async function r2trainModel(model, inputs, labels) {
-  const learningRate = 0.01;
+  const learningRate = 0.002;
   const beta1 = 0.7;  //0.9
   const beta2 = 0.9;  //0.999
   const epsilon = 0.00000001;
 
   model.compile({
-    optimizer: tf.train.adam(learningRate, beta1, beta2, epsilon),
+    optimizer: tf.train.adam(learningRate),  //adam(learningRate, beta1, beta2, epsilon)
     loss: tf.losses.meanSquaredError,
     metrics: ['mse'],
   });
 
   const batchSize = 16;
-  const epochs = 80;
+  const epochs = 200;
 
   const updateProgressBar = (epoch) => {
     const progress = ((epoch + 1) / epochs) * 100;
@@ -563,6 +591,7 @@ function r2testModelTrain(model, inputData, normalizationData) {
     }
   });
 
+  /*
   tfvis.render.scatterplot(
     {name: 'R2 Model Predictions vs Original Data Trainingdata'},
     {values: [originalPoints, predictedPoints], series: ['original', 'predicted']},
@@ -572,6 +601,7 @@ function r2testModelTrain(model, inputData, normalizationData) {
       height: 300
     }
   );
+  */
 }
 
 function r2testModelTest(model, inputData, normalizationData) {
@@ -652,7 +682,7 @@ function r2testModelTest(model, inputData, normalizationData) {
     }
   });
 
-
+  /*
   tfvis.render.scatterplot(
     {name: 'R2 Model Predictions vs Original Data Testdata'},
     {values: [originalPointsTest, predictedPointsTest], series: ['original', 'predicted']},
@@ -662,6 +692,7 @@ function r2testModelTest(model, inputData, normalizationData) {
       height: 300
     }
   );
+  */
 }
 
 
@@ -727,26 +758,29 @@ function r3createModel() {
   const r3model = tf.sequential();
 
   // Add a single input layer
-  r3model.add(tf.layers.dense({inputShape: [1], units: 1, useBias: true}));
+  r3model.add(tf.layers.dense({inputShape: [1], units: 256, useBias: true}));
 
   // Add hidden middle layer
-  r3model.add(tf.layers.dense({units: 200, activation: 'relu'}));
+  r3model.add(tf.layers.dense({units: 256, activation: 'relu'}));
 
   // Add hidden middle layer
-  r3model.add(tf.layers.dense({units: 200, activation: 'relu'}));
+  r3model.add(tf.layers.dense({units: 128, activation: 'relu'}));
 
   // Add hidden middle layer
-  r3model.add(tf.layers.dense({units: 100, activation: 'relu'}));
+  r3model.add(tf.layers.dense({units: 64, activation: 'relu'}));
 
   // Add hidden middle layer
-  r3model.add(tf.layers.dense({units: 30, activation: 'relu'}));
+  r3model.add(tf.layers.dense({units: 32, activation: 'relu'}));
 
   // Add hidden middle layer
-  r3model.add(tf.layers.dense({units: 20, activation: 'relu'}));
+  r3model.add(tf.layers.dense({units: 16, activation: 'relu'}));
+
+  // Add hidden middle layer
+  r3model.add(tf.layers.dense({units: 8, activation: 'relu'}));
   
 
   // Add an output layer
-  r3model.add(tf.layers.dense({units: 1, activation: 'linear', useBias: true}));
+  r3model.add(tf.layers.dense({units: 1, activation: 'linear'}));
 
   return r3model;
 }
@@ -778,7 +812,7 @@ async function r3trainModel(model, inputs, labels) {
 */
 
 async function r3trainModel(model, inputs, labels) {
-  const learningRate = 0.01;
+  const learningRate = 0.001;
 
   model.compile({
     optimizer: tf.train.adam(learningRate),
@@ -787,7 +821,7 @@ async function r3trainModel(model, inputs, labels) {
   });
 
   const batchSize = 8;
-  const epochs = 50;
+  const epochs = 300;
 
   const updateProgressBar = (epoch) => {
     const progress = ((epoch + 1) / epochs) * 100;
@@ -896,8 +930,8 @@ function r3testModelTrain(model, inputData, normalizationData) {
         },
         y: {
           beginAtZero: true,
-          min: -2,
-          max: 3,
+          min: -4, //-2,
+          max:  4, //3,
           title: {
             display: true,
             text: 'y-Funktionswerte'
