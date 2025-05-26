@@ -62,21 +62,6 @@ html, body {
 }
 */
 
-#r2-train {
-    display: none;
-}
-
-#r2-test {
-    display: none;
-}
-
-#r3-train {
-    display: none;
-}
-
-#r3-test {
-    display: none;
-}
 
 #progress-container {
     width: 100%;
@@ -109,6 +94,21 @@ html, body {
     text-align: center;
 }
 
+#r4-progress-container {
+    width: 100%;
+}
+
+#r4-progress-bar {
+    width: 0%; 
+    height: 30px; 
+    background-color: #76c7c0;
+    border-radius: 10px;
+}
+
+#r4-progress-text {
+    text-align: center;
+}
+
 
 
 
@@ -116,6 +116,7 @@ html, body {
 .dia {
     height: 300px !important;
     width: 600px !important;
+    display: none;
 }
 
 .r1,

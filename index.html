@@ -72,12 +72,19 @@
     </div>
     <h1>R4</h1>
     <p>Die Vorhersage Ihres Overfit-Modells y_overfit(x) trainiert auf den verrauschten Daten, links auf den Trainingsdaten, rechts auf den Testdaten (alles mit Rauschen)</p>
+    <div>
+      <div id="r4-progress-container">
+        <div id="r4-progress-bar">
+        </div>
+        <p id="r4-progress-text">Warten auf Trainingsbeginn...</p>
+      </div> 
+    </div>
     <div class="r4">
       <div>
-        <canvas id="ohneRauschen"></canvas>
+        <canvas class="dia" id="r4-train"></canvas>
       </div>
       <div>
-        <canvas id="mitRauschen"></canvas>
+        <canvas class="dia" id="r4-test"></canvas>
       </div>
     </div>
 
