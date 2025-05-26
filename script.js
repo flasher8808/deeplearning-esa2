@@ -12,7 +12,10 @@ function generateRandomNumbers(count, min, max) {
   return randomNumbers;
 }
 
+// Anzahl Trainingsdatensätze
 const count = 100;
+
+// Wertebereich der Trainingsdaten (x)
 const min = -2;
 const max = 2;
 
@@ -24,26 +27,13 @@ for (let i = 0; i < count; i++) {
 
 // Y-Werte berechnen
 function calcYValue (xval) {
-  //let yval = xval*xval*xval;
-  let yval = 0.5*(xval+0.8)*(xval+1.8)*(xval-0.2)*(xval-0.3)*(xval-1.9)+1;
-  // Funktion y(x) = 0.5*(x+0.8)*(x+1.8)*(x-0.2)*(x-0.3)*(x-1.9)+1
-  //console.log(yval);
-  return yval;
-}
-
-
-function combineArrays(arr1, arr2) {
-    // Sicherstellen, dass beide Arrays die gleiche Länge haben
-    if (arr1.length !== arr2.length) {
-        throw new Error('Die Arrays müssen die gleiche Länge haben.');
-    }
-    
-    // Verwende map, um ein Array von Wertepaaren zu erstellen
-    return arr1.map((value, index) => [value, arr2[index]]);
+  //return xval*xval*xval;
+  return 0.5*(xval+0.8)*(xval+1.8)*(xval-0.2)*(xval-0.3)*(xval-1.9)+1;
 }
 
 
 
+/*
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1)); // Wähle einen zufälligen Index aus 0 bis i
@@ -57,16 +47,15 @@ function shuffleArray(array) {
 
 // Array mischen
 shuffleArray(xValues);
+*/
 
 
-
-let testdaten = xValues.slice(0, count/2);
 let trainingsdaten = xValues.slice(count/2);
+let testdaten = xValues.slice(0, count/2);
 
-
-
-let testdatenY = [];
 let trainingsdatenY = [];
+let testdatenY = [];
+
 
 for (let i = 0; i < testdaten.length; i++) {
   testdatenY.push(calcYValue(testdaten[i]));
@@ -100,38 +89,53 @@ let testdatenY_rausch = addGaussianNoise(testdatenY, variance);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // JSON Objekte erzeugen
 let jsonTrainingsdaten = trainingsdaten.map((value, index) => ({ x: value, y: trainingsdatenY[index]}));
 let jsonTestdaten = testdaten.map((value, index) => ({ x: value, y: testdatenY[index]}));
 let jsonTrainingsdatenVerrauscht = trainingsdaten.map((value, index) => ({ x: value, y: trainingsdatenY_rausch[index]}));
 let jsonTestdatenVerrauscht = testdaten.map((value, index) => ({ x: value, y: testdatenY_rausch[index]}));
 
-console.log("Trainingsdaten");
-console.log(jsonTrainingsdaten);
-console.log("Testdaten");
-console.log(jsonTestdaten);
-console.log("Trainingsdaten verrauscht");
-console.log(trainingsdatenY_rausch);
+//console.log("Trainingsdaten");
+//console.log(jsonTrainingsdaten);
+//console.log("Testdaten");
+//console.log(jsonTestdaten);
+//console.log("Trainingsdaten verrauscht");
+//console.log(trainingsdatenY_rausch);
 
 
 
-console.log("Testdaten Y ");
-console.log(testdatenY);
-console.log("Testdaten Y verrauscht");
-console.log(testdatenY_rausch);
+//console.log("Testdaten Y ");
+//console.log(testdatenY);
+//console.log("Testdaten Y verrauscht");
+//console.log(testdatenY_rausch);
 
-console.log("Trainingsdaten");
-console.log(trainingsdaten);
-console.log("Trainingsdaten Y");
-console.log(trainingsdatenY);
+//console.log("Trainingsdaten");
+//console.log(trainingsdaten);
+//console.log("Trainingsdaten Y");
+//console.log(trainingsdatenY);
 
-
+/*
 // Fake Daten erzeugen
 const fakeData = generateRandomNumbers(50, -2, 2);
 let fakeDataY = [];
 
 let jsonFakeData = fakeData.map((value, index) => ({ x: value, y: value*2}));
 console.log(jsonFakeData);
+*/
 
 
 
@@ -277,8 +281,355 @@ const ChartmitRauschen = new Chart(ctx_mitRauschen, {
 
 
 
-async function r2print() {
+// Aufruf R2
+document.addEventListener('DOMContentLoaded', r2);
 
+
+async function r2() {
+  // 1. Trainingsdaten erzeugen
+  /*
+  const xs = [];
+  const ys = [];
+  for(let i = 0; i < 100; i++) {
+    const x = -2 + 4 * i / 99;
+    xs.push(x);
+    ys.push(calcYValue(x));
+  }
+  */
+
+  const xsTensor = tf.tensor2d(trainingsdaten, [trainingsdaten.length, 1]);
+  const ysTensor = tf.tensor2d(trainingsdatenY, [trainingsdatenY.length, 1]);
+
+  // 2. Modell definieren
+  const model = tf.sequential();
+  model.add(tf.layers.dense({units: 100, activation: 'relu', inputShape: [1]}));
+  model.add(tf.layers.dense({units: 100, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 1}));
+  model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'});
+
+  // 3. Training
+  const progressBar = document.getElementById('progress-bar');
+  const progressText = document.getElementById('progress-text');
+
+  /*
+  await model.fit(xsTensor, ysTensor, {
+    epochs: 100,
+    batchSize: 32,
+    shuffle: true,
+    callbacks: {
+      onEpochEnd: (epoch, logs, epochs) => {
+        // Prozent berechnen
+        const percent = ((epoch + 1) / epochs) * 100;
+        progressBar.style.width = percent + '%';
+        progressText.textContent = `Training läuft: Epoche ${epoch + 1} / 300 (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
+        //console.log(`Epoch ${epoch + 1}: Verlust = ${logs.loss.toFixed(5)}`);
+      },
+      onTrainEnd: () => {
+        progressText.textContent = 'Training abgeschlossen!';
+        progressBar.style.backgroundColor = '#2196F3'; // Farbe ändern nach Ende, optional
+        document.getElementById("progress-container").style.display = "none";
+      }
+    }
+  });
+  */
+
+  const epochs = 100; // oder irgendein dynamischer Wert
+
+  await model.fit(xsTensor, ysTensor, {
+    epochs: epochs,
+    batchSize: 32,
+    shuffle: true,
+    callbacks: createProgressCallback(epochs)
+  });
+
+  function createProgressCallback(totalEpochs) {
+  return {
+    onEpochEnd: (epoch, logs) => {
+      const percent = ((epoch + 1) / totalEpochs) * 100;
+      progressBar.style.width = percent + '%';
+      progressText.textContent = `Training läuft: Epoche ${epoch + 1} / ${totalEpochs} (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
+    },
+    onTrainEnd: () => {
+      progressText.textContent = 'Training abgeschlossen!';
+      progressBar.style.backgroundColor = '#2196F3';
+      document.getElementById("progress-container").style.display = "none";
+    }
+  }
+}
+
+
+
+  /* FIRST WORKING
+  await model.fit(xsTensor, ysTensor, {epochs: 300, batchSize: 32, shuffle: true, callbacks: {
+    onEpochEnd: (epoch, logs) => {
+      if(epoch % 50 === 0) {
+        console.log(`Epoch ${epoch}: Loss = ${logs.loss.toFixed(5)}`);
+      }
+    }
+  }});
+  */
+
+  // 4. Daten für Visualisierung vorbereiten
+
+  // Werte Originalfunktion
+  trainingsdaten = trainingsdaten.sort(function(a, b){return a - b});
+  const originalPoints = trainingsdaten.map(x => ({x: x, y: calcYValue(x)}));
+
+  // Werte Modellvorhersage
+  // Damit nicht jeden Punkt asynchron abfragen (zu langsam), machen wir batch-wise Prediction
+  const xTensorForPred = tf.tensor2d(trainingsdaten, [trainingsdaten.length, 1]);
+  const yPredTensor = model.predict(xTensorForPred);
+  const yPreds = await yPredTensor.array();
+  xTensorForPred.dispose();
+  yPredTensor.dispose();
+
+  const predictedPoints = trainingsdaten.map((x, i) => ({x: x, y: yPreds[i][0]}));
+
+  xsTensor.dispose();
+  ysTensor.dispose();
+
+  // 5. Chart.js Chart erstellen
+  const r2ctxtrain = document.getElementById('r2-train').getContext('2d');
+  const r2charttrain = new Chart(r2ctxtrain, {
+    type: 'scatter',
+    data: {
+      datasets: [
+        {
+          label: 'Modellvorhersage',
+          data: predictedPoints,
+          backgroundColor: 'rgba(75, 192, 192, 0.8)',
+          showLine: false,
+          fill: false,
+          pointRadius: 3,
+          tension: 0.2
+        },
+        {
+          label: 'Trainingsdaten',
+          data: originalPoints,
+          backgroundColor: 'rgba(192, 75, 75, 0.8)',
+          showLine: false,
+          fill: false,
+          pointRadius: 3,
+          tension: 0.2
+        },
+        
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'bottom',
+          title: {
+            display: true,
+            text: 'x-Achse'
+          },
+          min: -2,
+          max: 2
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'y-Funktionswerte'
+          },
+          min: -3,
+          max: 3
+        }
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Vorhersage ohne Rauschen auf Trainingsdaten'
+        }
+      }
+    }
+  });
+
+  // Werte Modellvorhersage Testdaten
+  // Damit nicht jeden Punkt asynchron abfragen (zu langsam), machen wir batch-wise Prediction
+  const xTensorForPredTest = tf.tensor2d(testdaten, [testdaten.length, 1]);
+  const yPredTensorTest = model.predict(xTensorForPredTest);
+  const yPredsTest = await yPredTensorTest.array();
+  xTensorForPredTest.dispose();
+  yPredTensorTest.dispose();
+
+  const originalPointsTest = testdaten.map(x => ({x: x, y: calcYValue(x)}));
+  const predictedPointsTest = testdaten.map((x, i) => ({x: x, y: yPredsTest[i][0]}));
+
+  xsTensor.dispose();
+  ysTensor.dispose();
+
+  // 5. Chart.js Chart erstellen
+  const r2ctxtest = document.getElementById('r2-test').getContext('2d');
+  const r2charttest = new Chart(r2ctxtest, {
+    type: 'scatter',
+    data: {
+      datasets: [
+        {
+          label: 'Modellvorhersage',
+          data: predictedPointsTest,
+          backgroundColor: 'rgba(75, 192, 192, 0.8)',
+          showLine: false,
+          fill: false,
+          pointRadius: 3,
+          tension: 0.2
+        },
+        {
+          label: 'Testdaten',
+          data: originalPointsTest,
+          backgroundColor: 'rgba(192, 75, 75, 0.8)',
+          showLine: false,
+          fill: false,
+          pointRadius: 3,
+          tension: 0.2
+        },
+        
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'bottom',
+          title: {
+            display: true,
+            text: 'x-Achse'
+          },
+          min: -2,
+          max: 2
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'y-Funktionswerte'
+          },
+          min: -3,
+          max: 3
+        }
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Vorhersage ohne Rauschen auf Testdaten'
+        }
+      }
+    }
+  });
+
+
+
+
+
+}
+
+/*
+async function r2printa() {
+  const learningRate = 0.002;
+
+  const xTensorTrain = tf.tensor2d(trainingsdaten, [trainingsdaten.length, 1]);
+  const yTensorTrain = tf.tensor2d(trainingsdatenY, [trainingsdatenY.length, 1]);
+
+  // Modell erstellen
+  const r2model = tf.sequential();
+  r2model.add(tf.layers.dense({inputShape: [1], units: 100, activation: 'relu'}));
+  r2model.add(tf.layers.dense({units: 100, activation: 'relu'}));
+  r2model.add(tf.layers.dense({units: 1}));
+  r2model.compile({optimizer: tf.train.adam(learningRate), loss: 'meanSquaredError'});
+
+  r2model.compile({
+    optimizer: tf.train.adam(learningRate),  //adam(learningRate, beta1, beta2, epsilon)
+    loss: tf.losses.meanSquaredError,
+    metrics: ['mse'],
+  });
+
+  const trainingCallbacks = tfvis.show.fitCallbacks(
+    { name: 'R2 Training Performance' },
+    ['loss', 'mse'],
+    { height: 200, callbacks: ['onEpochEnd'] }
+  );
+
+  
+  const updateProgressBar = (epoch) => {
+    const progress = ((epoch + 1) / epochs) * 100;
+    document.getElementById('progress-bar').style.width = progress + '%';
+    document.getElementById('progress-text').innerText = 'Training zu ' + progress.toFixed(0) + '% abgeschlossen';
+    if (progress == 100){
+      document.getElementById('progress-container').style.display = "none";
+      document.getElementById('r2-train').style.display = "block";
+      document.getElementById('r2-test').style.display = "block";
+    }
+    
+  };
+
+  await r2model.fit(xTensorTrain, yTensorTrain, {
+    epochs: 300,
+    batchSize: 32,
+    shuffle: true,
+    callbacks: {
+      onEpochEnd: async (epoch, logs) => {
+        //updateProgressBar(epoch);
+        await trainingCallbacks.onEpochEnd(epoch, logs);  // Sicherstellen, dass der tfvis Callback korrekt aufgerufen wird.
+      }
+    }
+  });
+
+
+  
+
+  const ctx_r2train = document.getElementById('r2-train').getContext('2d');
+  const chartr2train = new Chart(ctx_r2train, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'original',
+        data: originalPoints.map((value, index) => ({ x: value.x, y: originalPoints[index].y })),
+        backgroundColor: 'rgba(192, 75, 75, 0.8)',
+        pointRadius: 3
+      },
+      {
+        label: 'predicted',
+        data: predictedPoints.map((value, index) => ({ x: value.x, y: predictedPoints[index].y })),
+        backgroundColor: 'rgba(75, 192, 192, 0.8)',
+        pointRadius: 3
+      }]
+    },
+    options: {
+      plugins: {
+        title: {
+            display: true,
+            text: 'Vorhersage ohne Rauschen auf Trainingsdaten'
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'bottom',
+          title: {
+            display: true,
+            text: 'x-Achse'
+          }
+        },
+        y: {
+          beginAtZero: true,
+          min: -2,
+          max: 3,
+          title: {
+            display: true,
+            text: 'y-Funktionswerte'
+          }
+        }
+      }
+    }
+  });
+
+  
+
+  
+
+
+/*
   // Create the model
   const model = r2createModel();
   tfvis.show.modelSummary({name: 'R2 Model Summary'}, model);
@@ -302,7 +653,7 @@ async function r2print() {
       height: 300
     }
   );
-  */
+  
 
   // More code will be added below
 
@@ -321,16 +672,15 @@ async function r2print() {
   r2testModelTest(model, jsonTestdaten, tensorDataTest);
 
   //r3print();
-
+*//*
 }
-
-
-// Aufruf R2
-document.addEventListener('DOMContentLoaded', r2print);
+*/
 
 
 
 
+
+/*
 // Modell instanzieren
 function r2createModel() {
   // Create a sequential model
@@ -342,50 +692,14 @@ function r2createModel() {
   // Add hidden middle layer
   model.add(tf.layers.dense({units: 256, activation: 'relu'}));
 
-  // Add hidden middle layer
-  //model.add(tf.layers.dense({units: 50, activation: 'sigmoid'}));
 
-  // Add hidden middle layer
-  //model.add(tf.layers.dense({units: 10, activation: 'relu'}));
-
-  // Add hidden middle layer
-  //model.add(tf.layers.dense({units: 1024, activation: 'relu'}));
-
-
-/* ORIGINAL
-  // Add a single input layer
-  model.add(tf.layers.dense({inputShape: [1], units: 128, activation: 'relu'}));
-
-  // Add hidden middle layer
-  model.add(tf.layers.dense({units: 64, activation: 'relu'}));
-
-  // Add hidden middle layer
-  model.add(tf.layers.dense({units: 64, activation: 'relu'}));
-
-  // Add hidden middle layer
-  model.add(tf.layers.dense({units: 32, activation: 'relu'}));
-
-  // Add hidden middle layer
-  model.add(tf.layers.dense({units: 16, activation: 'relu'}));
-  */
-
-  /*
-  // Add hidden middle layer
-  model.add(tf.layers.dense({units: 100, activation: 'sigmoid', useBias: true}));
-
-  // Add hidden middle layer
-  model.add(tf.layers.dense({units: 30, activation: 'sigmoid', useBias: true}));
-
-  // Add hidden middle layer
-  model.add(tf.layers.dense({units: 20, activation: 'sigmoid', useBias: true}));
-  */
 
   // Add an output layer
   model.add(tf.layers.dense({units: 1}));
 
   return model;
 }
-
+*/
 
 
 /**
@@ -394,6 +708,8 @@ function r2createModel() {
  * the data and _normalizing_ the data
  * MPG on the y-axis.
  */
+
+/*
 function convertToTensor(jsonTrainingsdaten) {
   // Wrapping these calculations in a tidy will dispose any
   // intermediate tensors.
@@ -429,7 +745,7 @@ function convertToTensor(jsonTrainingsdaten) {
     }
   });
 }
-
+*/
 
 
 /* ORIGINAL
@@ -457,18 +773,21 @@ async function r2trainModel(model, inputs, labels) {
 }
 */
 
+/*
 async function r2trainModel(model, inputs, labels) {
-  const learningRate = 0.002;
+  //const learningRate = 0.002;
   const beta1 = 0.7;  //0.9
   const beta2 = 0.9;  //0.999
   const epsilon = 0.00000001;
 
+  /*
   model.compile({
     optimizer: tf.train.adam(learningRate),  //adam(learningRate, beta1, beta2, epsilon)
     loss: tf.losses.meanSquaredError,
     metrics: ['mse'],
   });
-
+  */
+/*
   const batchSize = 16;
   const epochs = 200;
 
@@ -502,8 +821,8 @@ async function r2trainModel(model, inputs, labels) {
     }
   });
 }
-
-
+*/
+/*
 function r2testModelTrain(model, inputData, normalizationData) {
   const {inputMax, inputMin, labelMin, labelMax} = normalizationData;
 
@@ -544,7 +863,7 @@ function r2testModelTrain(model, inputData, normalizationData) {
     console.log(originalPoints[i]);
   }
   */
-
+/*
   const ctx_r2train = document.getElementById('r2-train').getContext('2d');
   const chartr2train = new Chart(ctx_r2train, {
     type: 'scatter',
@@ -601,8 +920,10 @@ function r2testModelTrain(model, inputData, normalizationData) {
       height: 300
     }
   );
-  */
+  *//*
 }
+*/
+
 
 function r2testModelTest(model, inputData, normalizationData) {
   const {inputMax, inputMin, labelMin, labelMax} = normalizationData;
@@ -694,6 +1015,34 @@ function r2testModelTest(model, inputData, normalizationData) {
   );
   */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
