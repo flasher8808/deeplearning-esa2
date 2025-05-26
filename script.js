@@ -13,7 +13,7 @@ function generateRandomNumbers(count, min, max) {
 }
 
 // Anzahl Trainingsdatensätze
-const count = 100;
+const count = 200;
 
 // Wertebereich der Trainingsdaten (x)
 const min = -2;
@@ -32,22 +32,6 @@ function calcYValue (xval) {
 }
 
 
-
-/*
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1)); // Wähle einen zufälligen Index aus 0 bis i
-    // Tausche die Elemente an den Positionen i und j
-    const temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  }
-}
-
-
-// Array mischen
-shuffleArray(xValues);
-*/
 
 
 let trainingsdaten = xValues.slice(count/2);
@@ -87,55 +71,6 @@ const variance = 0.05;
 let trainingsdatenY_rausch = addGaussianNoise(trainingsdatenY, variance);
 let testdatenY_rausch = addGaussianNoise(testdatenY, variance);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// JSON Objekte erzeugen
-let jsonTrainingsdaten = trainingsdaten.map((value, index) => ({ x: value, y: trainingsdatenY[index]}));
-let jsonTestdaten = testdaten.map((value, index) => ({ x: value, y: testdatenY[index]}));
-let jsonTrainingsdatenVerrauscht = trainingsdaten.map((value, index) => ({ x: value, y: trainingsdatenY_rausch[index]}));
-let jsonTestdatenVerrauscht = testdaten.map((value, index) => ({ x: value, y: testdatenY_rausch[index]}));
-
-//console.log("Trainingsdaten");
-//console.log(jsonTrainingsdaten);
-//console.log("Testdaten");
-//console.log(jsonTestdaten);
-//console.log("Trainingsdaten verrauscht");
-//console.log(trainingsdatenY_rausch);
-
-
-
-//console.log("Testdaten Y ");
-//console.log(testdatenY);
-//console.log("Testdaten Y verrauscht");
-//console.log(testdatenY_rausch);
-
-//console.log("Trainingsdaten");
-//console.log(trainingsdaten);
-//console.log("Trainingsdaten Y");
-//console.log(trainingsdatenY);
-
-/*
-// Fake Daten erzeugen
-const fakeData = generateRandomNumbers(50, -2, 2);
-let fakeDataY = [];
-
-let jsonFakeData = fakeData.map((value, index) => ({ x: value, y: value*2}));
-console.log(jsonFakeData);
-*/
 
 
 
@@ -349,6 +284,10 @@ async function r2() {
         const percent = ((epoch + 1) / totalEpochs) * 100;
         progressBar.style.width = percent + '%';
         progressText.textContent = `Training läuft: Epoche ${epoch + 1} / ${totalEpochs} (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
+
+        if((epoch + 20) % 20 === 0) {
+          console.log(`Epoch ${epoch}: Loss = ${logs.loss.toFixed(5)}`);
+        }
       },
       onTrainEnd: () => {
         progressText.textContent = 'Training abgeschlossen!';
@@ -590,6 +529,9 @@ async function r3() {
         const percent = ((epoch + 1) / totalEpochs) * 100;
         progressBar.style.width = percent + '%';
         progressText.textContent = `Training läuft: Epoche ${epoch + 1} / ${totalEpochs} (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
+        if((epoch + 20) % 20 === 0) {
+          console.log(`Epoch ${epoch}: Loss = ${logs.loss.toFixed(5)}`);
+        }
       },
       onTrainEnd: () => {
         progressText.textContent = 'Training abgeschlossen!';
@@ -823,6 +765,9 @@ async function r4() {
         const percent = ((epoch + 1) / totalEpochs) * 100;
         progressBar.style.width = percent + '%';
         progressText.textContent = `Training läuft: Epoche ${epoch + 1} / ${totalEpochs} (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
+        if((epoch + 20) % 20 === 0) {
+          console.log(`Epoch ${epoch}: Loss = ${logs.loss.toFixed(5)}`);
+        }
       },
       onTrainEnd: () => {
         progressText.textContent = 'Training abgeschlossen!';
