@@ -905,14 +905,25 @@ async function r4() {
 
 
 
+// Bildervergrößerung
+const thumbnails = document.querySelectorAll('.thumbnail');
+const lightbox = document.getElementById('lightbox');
+const lightboxImage = document.getElementById('lightboxImage');
 
 
+document.querySelectorAll('.image-container').forEach(item => {
+  item.addEventListener('click', event => {
+      const imgSrc = item.querySelector('.image').src;
+      
+      lightboxImage.src = imgSrc;
+      lightbox.style.display = 'flex'; 
+    
+  });
+});
 
 
-
-
-
-
-
+lightbox.addEventListener('click', function() {
+    lightbox.style.display = 'none'; 
+});
 
 

@@ -101,11 +101,21 @@
       <div class="r1">
         <div>
           <p>Beispiel für eine (sehr) gute Approximation:</p>
-          <img class="disc-r2" src="images/a2-good.png" alt="Aufgabe A2 - gute Approximation">
+          <div class="image-container">
+            <img class="disc-r2 image thumbnail" src="images/a2-good.png" alt="Aufgabe A2 - gute Approximation">
+            <div class="overlay">
+                <span class="icon">🔍</span>
+            </div>
+          </div>
         </div>
         <div>
           <p>Beispiel für eine fehlerhafte Approximation:</p>
-          <img class="disc-r2" src="images/a2-faulty.png" alt="Aufgabe A2 - fehlerhafte Approximation">
+          <div class="image-container">
+            <img class="disc-r2 image thumbnail" src="images/a2-faulty.png" alt="Aufgabe A2 - fehlerhafte Approximation">
+            <div class="overlay">
+                <span class="icon">🔍</span>
+            </div>
+          </div>
         </div>
       </div>
       <p>Overfitting kann in diesem Aufgabenteil nicht entstehen, da alle Trainingsdaten exakt auf der zu gesuchten Funktion liegen. Overfitting tritt erst auf, wenn die Trainingsdaten ein gewisses Rauschen aufweisen und nicht mehr perfekt auf der gesuchten Funktion liegen. Overfitting beschreibt dann den Zustand, wenn das Modell die Trainingsdaten zu genau nimmt und somit von der eigentlich gesuchten Funktion abweicht. An dieser Stelle kann das Modell nicht mehr gut generalisieren.</p>
@@ -158,9 +168,11 @@
   </div>
 
   
+  <!-- div für vergrößerte Bilder-->
+  <div class="lightbox" id="lightbox">
+    <img id="lightboxImage" src="" alt="Vergrößertes Bild">
+  </div>
 
-
-  
 
   <!-- Import the main script file -->
   <script src="script.js"></script>
