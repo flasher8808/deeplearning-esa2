@@ -217,7 +217,7 @@ const ChartmitRauschen = new Chart(ctx_mitRauschen, {
 
 
 // Aufruf R2
-document.addEventListener('DOMContentLoaded', r4);
+document.addEventListener('DOMContentLoaded', r2);
 
 
 async function r2() {

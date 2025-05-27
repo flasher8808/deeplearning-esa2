@@ -97,8 +97,18 @@
     <div class="discussion">
       <h1>Diskussion</h1>
       <h2>R2</h2>
-      <p>Bei Bildern, die aus dem Trainingsdatensatz stammen, erfolgte in allen Stichproben eine korrekte Klassifikation mit einer sehr hohen Wahrscheinlichkeit. Werden eigene Bilder von gleichen Objekten hochgeladen  (Beispiel: Goldfisch, Marienkäfer oder Sicherheitsnadel), dann wird ebenfalls mit sehr hoher Wahrscheinlichkeit die korrekte Klassifikation vorgenommen.
-      Sind verschiedene Objekte auf einem Bild zu erkennen, dann sinkt die Wahrscheinlichkeit einer korrekten Klassifikation erheblich und es kommt in einigen Fällen zu falschen Zuordnungen. Bei dem dritten Beispiel der korrekten Zuordnung beträgt die Wahrscheinlichkeit, dass es sich um eine Küste handelt nur knapp 19%. Es ist somit eine gewisse Unsicherheit damit verbunden. Bilder von / mit Personen sind besonders schwierig vom Modell zu klassifizieren - aus Datenschutzgründen soll kein Beispiel gezeigt werden.</p>
+      <p>Grundsätzlich erreicht das trainierte Modell eine gute Approximation an die gegebene Funktion. In seltenen Fällen werden Teile der Funktion schlecht nach-empfunden - einen direkten Zusammenhang zu den Trainingsdaten konnte ich nicht erkennen. Beide Screenshots sind mit dem gleichen Modell erstellt nur jeweils mit verschiedenen Trainingsdaten trainiert.</p>
+      <div class="r1">
+        <div>
+          <p>Beispiel für eine (sehr) gute Approximation:</p>
+          <img class="disc-r2" src="images/a2-good.png" alt="Aufgabe A2 - gute Approximation">
+        </div>
+        <div>
+          <p>Beispiel für eine fehlerhafte Approximation:</p>
+          <img class="disc-r2" src="images/a2-faulty.png" alt="Aufgabe A2 - fehlerhafte Approximation">
+        </div>
+      </div>
+      <p>Overfitting kann in diesem Aufgabenteil nicht entstehen, da alle Trainingsdaten exakt auf der zu gesuchten Funktion liegen. Overfitting tritt erst auf, wenn die Trainingsdaten ein gewisses Rauschen aufweisen und nicht mehr perfekt auf der gesuchten Funktion liegen. Overfitting beschreibt dann den Zustand, wenn das Modell die Trainingsdaten zu genau nimmt und somit von der eigentlich gesuchten Funktion abweicht. An dieser Stelle kann das Modell nicht mehr gut generalisieren.</p>
       <h2>R3</h2>
       <p>Bei Bildern, die aus dem Trainingsdatensatz stammen, erfolgte in allen Stichproben eine korrekte Klassifikation mit einer sehr hohen Wahrscheinlichkeit. Werden eigene Bilder von gleichen Objekten hochgeladen  (Beispiel: Goldfisch, Marienkäfer oder Sicherheitsnadel), dann wird ebenfalls mit sehr hoher Wahrscheinlichkeit die korrekte Klassifikation vorgenommen.
       Sind verschiedene Objekte auf einem Bild zu erkennen, dann sinkt die Wahrscheinlichkeit einer korrekten Klassifikation erheblich und es kommt in einigen Fällen zu falschen Zuordnungen. Bei dem dritten Beispiel der korrekten Zuordnung beträgt die Wahrscheinlichkeit, dass es sich um eine Küste handelt nur knapp 19%. Es ist somit eine gewisse Unsicherheit damit verbunden. Bilder von / mit Personen sind besonders schwierig vom Modell zu klassifizieren - aus Datenschutzgründen soll kein Beispiel gezeigt werden.</p>
