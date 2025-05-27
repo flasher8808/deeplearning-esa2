@@ -126,13 +126,13 @@ const ChartohneRauschen = new Chart(ctx_ohneRauschen, {
     datasets: [{
       label: 'Trainingsdaten',
       data: trainingsdaten.map((value, index) => ({ x: value, y: calcYValue(value) })),
-      backgroundColor: 'rgba(192, 75, 75, 0.8)',
+      backgroundColor: 'rgba(255, 136, 0, 0.8)',
       pointRadius: 3
     },
     {
       label: 'Testdaten',
       data: testdaten.map((value, index) => ({ x: value, y: calcYValue(value) })),
-      backgroundColor: 'rgba(75, 192, 192, 0.8)',
+      backgroundColor: 'rgba(0, 119, 255, 0.8)',
       pointRadius: 3
     }]
   },
@@ -174,13 +174,13 @@ const ChartmitRauschen = new Chart(ctx_mitRauschen, {
     datasets: [{
       label: 'Trainingsdaten',
       data: trainingsdaten.map((value, index) => ({ x: value, y: trainingsdatenY_rausch[index] })),
-      backgroundColor: 'rgba(192, 75, 75, 0.8)',
+      backgroundColor: 'rgba(255, 136, 0, 0.8)',
       pointRadius: 3
     },
     {
       label: 'Testdaten',
       data: testdaten.map((value, index) => ({ x: value, y: testdatenY_rausch[index] })),
-      backgroundColor: 'rgba(75, 192, 192, 0.8)',
+      backgroundColor: 'rgba(0, 119, 255, 0.8)',
       pointRadius: 3
     }]
   },
@@ -324,7 +324,7 @@ async function r2() {
         {
           label: 'Modellvorhersage',
           data: predictedPoints,
-          backgroundColor: 'rgba(75, 192, 192, 0.8)',
+          backgroundColor: 'rgba(0, 119, 255, 0.8)',
           showLine: false,
           fill: false,
           pointRadius: 3,
@@ -333,7 +333,7 @@ async function r2() {
         {
           label: 'Trainingsdaten',
           data: originalPoints,
-          backgroundColor: 'rgba(192, 75, 75, 0.8)',
+          backgroundColor: 'rgba(255, 136, 0, 0.8)',
           showLine: false,
           fill: false,
           pointRadius: 3,
@@ -395,7 +395,7 @@ async function r2() {
         {
           label: 'Modellvorhersage',
           data: predictedPointsTest,
-          backgroundColor: 'rgba(75, 192, 192, 0.8)',
+          backgroundColor: 'rgba(0, 119, 255, 0.8)',
           showLine: false,
           fill: false,
           pointRadius: 3,
@@ -404,7 +404,7 @@ async function r2() {
         {
           label: 'Testdaten',
           data: originalPointsTest,
-          backgroundColor: 'rgba(192, 75, 75, 0.8)',
+          backgroundColor: 'rgba(255, 136, 0, 0.8)',
           showLine: false,
           fill: false,
           pointRadius: 3,
@@ -550,7 +550,7 @@ async function r3() {
         {
           label: 'Modellvorhersage',
           data: predictedPoints,
-          backgroundColor: 'rgba(75, 192, 192, 0.8)',
+          backgroundColor: 'rgba(0, 119, 255, 0.8)',
           showLine: false,
           fill: false,
           pointRadius: 3,
@@ -559,7 +559,7 @@ async function r3() {
         {
           label: 'Trainingsdaten',
           data: originalPoints,
-          backgroundColor: 'rgba(192, 75, 75, 0.8)',
+          backgroundColor: 'rgba(255, 136, 0, 0.8)',
           showLine: false,
           fill: false,
           pointRadius: 3,
@@ -622,7 +622,7 @@ async function r3() {
         {
           label: 'Modellvorhersage',
           data: predictedPointsTest,
-          backgroundColor: 'rgba(75, 192, 192, 0.8)',
+          backgroundColor: 'rgba(0, 119, 255, 0.8)',
           showLine: false,
           fill: false,
           pointRadius: 3,
@@ -631,7 +631,7 @@ async function r3() {
         {
           label: 'Testdaten',
           data: originalPointsTest,
-          backgroundColor: 'rgba(192, 75, 75, 0.8)',
+          backgroundColor: 'rgba(255, 136, 0, 0.8)',
           showLine: false,
           fill: false,
           pointRadius: 3,
@@ -773,7 +773,7 @@ async function r4() {
         {
           label: 'Modellvorhersage',
           data: predictedPoints,
-          backgroundColor: 'rgba(75, 192, 192, 0.8)',
+          backgroundColor: 'rgba(0, 119, 255, 0.8)',
           showLine: false,
           fill: false,
           pointRadius: 3,
@@ -782,7 +782,7 @@ async function r4() {
         {
           label: 'Trainingsdaten',
           data: originalPoints,
-          backgroundColor: 'rgba(192, 75, 75, 0.8)',
+          backgroundColor: 'rgba(255, 136, 0, 0.8)',
           showLine: false,
           fill: false,
           pointRadius: 3,
@@ -845,7 +845,7 @@ async function r4() {
         {
           label: 'Modellvorhersage',
           data: predictedPointsTest,
-          backgroundColor: 'rgba(75, 192, 192, 0.8)',
+          backgroundColor: 'rgba(0, 119, 255, 0.8)',
           showLine: false,
           fill: false,
           pointRadius: 3,
@@ -854,7 +854,7 @@ async function r4() {
         {
           label: 'Testdaten',
           data: originalPointsTest,
-          backgroundColor: 'rgba(192, 75, 75, 0.8)',
+          backgroundColor: 'rgba(255, 136, 0, 0.8)',
           showLine: false,
           fill: false,
           pointRadius: 3,
