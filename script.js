@@ -13,7 +13,7 @@ function generateRandomNumbers(count, min, max) {
 }
 
 // Anzahl Trainingsdatensätze
-const count = 200;
+const count = 100;
 
 // Wertebereich der Trainingsdaten (x)
 const min = -2;
@@ -234,11 +234,15 @@ async function r2() {
 
   const xsTensor = tf.tensor2d(trainingsdaten, [trainingsdaten.length, 1]);
   const ysTensor = tf.tensor2d(trainingsdatenY, [trainingsdatenY.length, 1]);
+  // Tensoren für Loss
+  const xsTestTensor = tf.tensor2d(testdaten, [testdaten.length, 1]);
+  const ysTestTensor = tf.tensor2d(testdatenY, [testdatenY.length, 1]);
 
   // 2. Modell definieren
   const model = tf.sequential();
-  model.add(tf.layers.dense({units: 100, activation: 'relu', inputShape: [1]}));
-  model.add(tf.layers.dense({units: 100, activation: 'relu'}));
+  model.add(tf.layers.dense({inputShape: [1], units: 256, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 128, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 128, activation: 'relu'}));
   model.add(tf.layers.dense({units: 1}));
   model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'});
 
@@ -246,35 +250,15 @@ async function r2() {
   const progressBar = document.getElementById('progress-bar');
   const progressText = document.getElementById('progress-text');
 
-  /*
-  await model.fit(xsTensor, ysTensor, {
-    epochs: 100,
-    batchSize: 32,
-    shuffle: true,
-    callbacks: {
-      onEpochEnd: (epoch, logs, epochs) => {
-        // Prozent berechnen
-        const percent = ((epoch + 1) / epochs) * 100;
-        progressBar.style.width = percent + '%';
-        progressText.textContent = `Training läuft: Epoche ${epoch + 1} / 300 (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
-        //console.log(`Epoch ${epoch + 1}: Verlust = ${logs.loss.toFixed(5)}`);
-      },
-      onTrainEnd: () => {
-        progressText.textContent = 'Training abgeschlossen!';
-        progressBar.style.backgroundColor = '#2196F3'; // Farbe ändern nach Ende, optional
-        document.getElementById("progress-container").style.display = "none";
-      }
-    }
-  });
-  */
 
   // Anzahl Trainingsepochen
-  const epochs = 100; 
+  const epochs = 250; 
 
   await model.fit(xsTensor, ysTensor, {
     epochs: epochs,
     batchSize: 32,
     shuffle: true,
+    validationData: [xsTestTensor, ysTestTensor],
     callbacks: createProgressCallback(epochs)
   });
 
@@ -284,10 +268,12 @@ async function r2() {
         const percent = ((epoch + 1) / totalEpochs) * 100;
         progressBar.style.width = percent + '%';
         progressText.textContent = `Training läuft: Epoche ${epoch + 1} / ${totalEpochs} (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
-
+        document.getElementById("r2-train-loss").textContent = `Finaler Loss auf Trainingsdaten: ${logs.loss.toFixed(5)}`;
+        //console.log(`Epoch ${epoch}: Loss = ${logs.loss.toFixed(5)}`);
+        /*
         if((epoch + 20) % 20 === 0) {
           console.log(`Epoch ${epoch}: Loss = ${logs.loss.toFixed(5)}`);
-        }
+        }*/
       },
       onTrainEnd: () => {
         progressText.textContent = 'Training abgeschlossen!';
@@ -298,16 +284,13 @@ async function r2() {
   }
 
 
+  // Nach dem Training, falls du nochmal den Test Loss manuell berechnen willst:
+  const predsTest = model.predict(xsTestTensor);
+  const testLossTensor = tf.losses.meanSquaredError(ysTestTensor, predsTest);
+  const testLossValue = (await testLossTensor.data())[0];
+  //console.log('Finaler Test Loss:', testLossValue.toFixed(5));
+  document.getElementById("r2-test-loss").textContent = `Finaler Loss auf Trainingsdaten: ${testLossValue.toFixed(5)}`;
 
-  /* FIRST WORKING
-  await model.fit(xsTensor, ysTensor, {epochs: 300, batchSize: 32, shuffle: true, callbacks: {
-    onEpochEnd: (epoch, logs) => {
-      if(epoch % 50 === 0) {
-        console.log(`Epoch ${epoch}: Loss = ${logs.loss.toFixed(5)}`);
-      }
-    }
-  }});
-  */
 
   // 4. Daten für Visualisierung vorbereiten
 
@@ -326,6 +309,11 @@ async function r2() {
 
   xsTensor.dispose();
   ysTensor.dispose();
+  xsTestTensor.dispose();
+  ysTestTensor.dispose();
+  predsTest.dispose();
+  testLossTensor.dispose();
+
 
   // 5. Chart.js Chart erstellen
   const r2ctxtrain = document.getElementById('r2-train').getContext('2d');
@@ -385,6 +373,7 @@ async function r2() {
     }
   });
 
+
   // Werte Modellvorhersage Testdaten
   // Damit nicht jeden Punkt asynchron abfragen (zu langsam), machen wir batch-wise Prediction
   const xTensorForPredTest = tf.tensor2d(testdaten, [testdaten.length, 1]);
@@ -396,8 +385,6 @@ async function r2() {
   const originalPointsTest = testdaten.map(x => ({x: x, y: calcYValue(x)}));
   const predictedPointsTest = testdaten.map((x, i) => ({x: x, y: yPredsTest[i][0]}));
 
-  xsTensor.dispose();
-  ysTensor.dispose();
 
   // 5. Chart.js Chart erstellen
   const r2ctxtest = document.getElementById('r2-test').getContext('2d');
@@ -457,6 +444,13 @@ async function r2() {
     }
   });
 
+
+  // Loss Sichbarkeit umschalten
+  document.getElementById("r2-train-loss").style.display = "block";
+  document.getElementById("r2-test-loss").style.display = "block";
+
+
+  // Aufruf R3
   r3();
 }
 
@@ -466,19 +460,13 @@ async function r2() {
 
 
 async function r3() {
-  // 1. Trainingsdaten erzeugen
-  /*
-  const xs = [];
-  const ys = [];
-  for(let i = 0; i < 100; i++) {
-    const x = -2 + 4 * i / 99;
-    xs.push(x);
-    ys.push(calcYValue(x));
-  }
-  */
 
   const xsTensor = tf.tensor2d(trainingsdaten, [trainingsdaten.length, 1]);
   const ysTensor = tf.tensor2d(trainingsdatenY_rausch, [trainingsdatenY_rausch.length, 1]);
+  // Tensoren für Loss
+  const xsTestTensor = tf.tensor2d(testdaten, [testdaten.length, 1]);
+  const ysTestTensor = tf.tensor2d(testdatenY, [testdatenY.length, 1]);
+
 
   // 2. Modell definieren
   const model = tf.sequential();
@@ -487,31 +475,11 @@ async function r3() {
   model.add(tf.layers.dense({units: 1}));
   model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'});
 
+
   // 3. Training
   const progressBar = document.getElementById('r3-progress-bar');
   const progressText = document.getElementById('r3-progress-text');
 
-  /*
-  await model.fit(xsTensor, ysTensor, {
-    epochs: 100,
-    batchSize: 32,
-    shuffle: true,
-    callbacks: {
-      onEpochEnd: (epoch, logs, epochs) => {
-        // Prozent berechnen
-        const percent = ((epoch + 1) / epochs) * 100;
-        progressBar.style.width = percent + '%';
-        progressText.textContent = `Training läuft: Epoche ${epoch + 1} / 300 (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
-        //console.log(`Epoch ${epoch + 1}: Verlust = ${logs.loss.toFixed(5)}`);
-      },
-      onTrainEnd: () => {
-        progressText.textContent = 'Training abgeschlossen!';
-        progressBar.style.backgroundColor = '#2196F3'; // Farbe ändern nach Ende, optional
-        document.getElementById("progress-container").style.display = "none";
-      }
-    }
-  });
-  */
 
   // Anzahl Trainingsepochen
   const epochs = 200; 
@@ -529,6 +497,8 @@ async function r3() {
         const percent = ((epoch + 1) / totalEpochs) * 100;
         progressBar.style.width = percent + '%';
         progressText.textContent = `Training läuft: Epoche ${epoch + 1} / ${totalEpochs} (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
+        document.getElementById("r3-train-loss").textContent = `Finaler Loss auf Trainingsdaten: ${logs.loss.toFixed(5)}`;
+
         if((epoch + 20) % 20 === 0) {
           console.log(`Epoch ${epoch}: Loss = ${logs.loss.toFixed(5)}`);
         }
@@ -540,6 +510,14 @@ async function r3() {
       }
     }
   }
+
+
+  // Nach dem Training, falls du nochmal den Test Loss manuell berechnen willst:
+  const predsTest = model.predict(xsTestTensor);
+  const testLossTensor = tf.losses.meanSquaredError(ysTestTensor, predsTest);
+  const testLossValue = (await testLossTensor.data())[0];
+  //console.log('Finaler Test Loss:', testLossValue.toFixed(5));
+  document.getElementById("r3-test-loss").textContent = `Finaler Loss auf Trainingsdaten: ${testLossValue.toFixed(5)}`;
 
 
   // 4. Daten für Visualisierung vorbereiten
@@ -693,6 +671,10 @@ async function r3() {
     }
   });
 
+  // Loss Sichbarkeit umschalten
+  document.getElementById("r3-train-loss").style.display = "block";
+  document.getElementById("r3-test-loss").style.display = "block";
+
   r4();
 }
 
@@ -700,19 +682,12 @@ async function r3() {
 
 
 async function r4() {
-  // 1. Trainingsdaten erzeugen
-  /*
-  const xs = [];
-  const ys = [];
-  for(let i = 0; i < 100; i++) {
-    const x = -2 + 4 * i / 99;
-    xs.push(x);
-    ys.push(calcYValue(x));
-  }
-  */
-
+  
   const xsTensor = tf.tensor2d(trainingsdaten, [trainingsdaten.length, 1]);
   const ysTensor = tf.tensor2d(trainingsdatenY_rausch, [trainingsdatenY_rausch.length, 1]);
+  // Tensoren für Loss
+  const xsTestTensor = tf.tensor2d(testdaten, [testdaten.length, 1]);
+  const ysTestTensor = tf.tensor2d(testdatenY, [testdatenY.length, 1]);
 
   // 2. Modell definieren
   const model = tf.sequential();
@@ -727,27 +702,7 @@ async function r4() {
   const progressBar = document.getElementById('r4-progress-bar');
   const progressText = document.getElementById('r4-progress-text');
 
-  /*
-  await model.fit(xsTensor, ysTensor, {
-    epochs: 100,
-    batchSize: 32,
-    shuffle: true,
-    callbacks: {
-      onEpochEnd: (epoch, logs, epochs) => {
-        // Prozent berechnen
-        const percent = ((epoch + 1) / epochs) * 100;
-        progressBar.style.width = percent + '%';
-        progressText.textContent = `Training läuft: Epoche ${epoch + 1} / 300 (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
-        //console.log(`Epoch ${epoch + 1}: Verlust = ${logs.loss.toFixed(5)}`);
-      },
-      onTrainEnd: () => {
-        progressText.textContent = 'Training abgeschlossen!';
-        progressBar.style.backgroundColor = '#2196F3'; // Farbe ändern nach Ende, optional
-        document.getElementById("progress-container").style.display = "none";
-      }
-    }
-  });
-  */
+  
 
   // Anzahl Trainingsepochen
   const epochs = 50; 
@@ -765,6 +720,7 @@ async function r4() {
         const percent = ((epoch + 1) / totalEpochs) * 100;
         progressBar.style.width = percent + '%';
         progressText.textContent = `Training läuft: Epoche ${epoch + 1} / ${totalEpochs} (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
+        document.getElementById("r4-train-loss").textContent = `Finaler Loss auf Trainingsdaten: ${logs.loss.toFixed(5)}`;
         if((epoch + 20) % 20 === 0) {
           console.log(`Epoch ${epoch}: Loss = ${logs.loss.toFixed(5)}`);
         }
@@ -776,6 +732,15 @@ async function r4() {
       }
     }
   }
+
+
+  // Nach dem Training, falls du nochmal den Test Loss manuell berechnen willst:
+  const predsTest = model.predict(xsTestTensor);
+  const testLossTensor = tf.losses.meanSquaredError(ysTestTensor, predsTest);
+  const testLossValue = (await testLossTensor.data())[0];
+  //console.log('Finaler Test Loss:', testLossValue.toFixed(5));
+  document.getElementById("r4-test-loss").textContent = `Finaler Loss auf Trainingsdaten: ${testLossValue.toFixed(5)}`;
+
 
 
   // 4. Daten für Visualisierung vorbereiten
@@ -928,6 +893,10 @@ async function r4() {
       }
     }
   });
+
+  // Loss Sichbarkeit umschalten
+  document.getElementById("r4-train-loss").style.display = "block";
+  document.getElementById("r4-test-loss").style.display = "block";
 
 }
 

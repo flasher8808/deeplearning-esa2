@@ -119,6 +119,37 @@ html, body {
     display: none;
 }
 
+#r2-train-loss {
+    display: none;
+    margin-left: 45px;
+}
+
+#r2-test-loss {
+    display: none;
+    margin-left: 45px;
+}
+
+#r3-train-loss {
+    display: none;
+    margin-left: 45px;
+}
+
+#r3-test-loss {
+    display: none;
+    margin-left: 45px;
+}
+
+#r4-train-loss {
+    display: none;
+    margin-left: 45px;
+}
+
+#r4-test-loss {
+    display: none;
+    margin-left: 45px;
+}
+
+
 .r1,
 .r2,
 .r3,
