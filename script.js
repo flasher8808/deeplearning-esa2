@@ -217,7 +217,7 @@ const ChartmitRauschen = new Chart(ctx_mitRauschen, {
 
 
 // Aufruf R2
-document.addEventListener('DOMContentLoaded', r2);
+document.addEventListener('DOMContentLoaded', r4);
 
 
 async function r2() {
@@ -691,10 +691,10 @@ async function r4() {
 
   // 2. Modell definieren
   const model = tf.sequential();
-  model.add(tf.layers.dense({units: 512, activation: 'relu', inputShape: [1]}));
+  model.add(tf.layers.dense({inputShape: [1], units: 512, activation: 'relu'}));
   model.add(tf.layers.dense({units: 512, activation: 'relu'}));
-  model.add(tf.layers.dense({units: 256, activation: 'relu'}));
-  model.add(tf.layers.dense({units: 128, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 512, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 512, activation: 'relu'}));
   model.add(tf.layers.dense({units: 1}));
   model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'});
 
@@ -705,11 +705,11 @@ async function r4() {
   
 
   // Anzahl Trainingsepochen
-  const epochs = 50; 
+  const epochs = 200; 
 
   await model.fit(xsTensor, ysTensor, {
     epochs: epochs,
-    batchSize: 32,
+    batchSize: 16,
     shuffle: true,
     callbacks: createProgressCallback(epochs)
   });
