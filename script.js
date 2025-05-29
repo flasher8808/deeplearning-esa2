@@ -154,7 +154,7 @@ const ChartohneRauschen = new Chart(ctx_ohneRauschen, {
       },
       y: {
         beginAtZero: true,
-        min: -2,
+        min: -3,
         max: 3,
         title: {
           display: true,
@@ -202,7 +202,7 @@ const ChartmitRauschen = new Chart(ctx_mitRauschen, {
       },
       y: {
         beginAtZero: true,
-        min: -2,
+        min: -3,
         max: 3,
         title: {
           display: true,
@@ -217,7 +217,7 @@ const ChartmitRauschen = new Chart(ctx_mitRauschen, {
 
 
 // Aufruf R2
-document.addEventListener('DOMContentLoaded', r2);
+document.addEventListener('DOMContentLoaded', r4);
 
 
 async function r2() {
@@ -691,10 +691,10 @@ async function r4() {
 
   // 2. Modell definieren
   const model = tf.sequential();
-  model.add(tf.layers.dense({inputShape: [1], units: 512, activation: 'relu'}));
-  model.add(tf.layers.dense({units: 512, activation: 'relu'}));
-  model.add(tf.layers.dense({units: 512, activation: 'relu'}));
-  model.add(tf.layers.dense({units: 512, activation: 'relu'}));
+  model.add(tf.layers.dense({inputShape: [1], units: 800, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 800, activation: 'relu'}));
+  //model.add(tf.layers.dense({units: 512, activation: 'relu'}));
+  //model.add(tf.layers.dense({units: 512, activation: 'relu'}));
   model.add(tf.layers.dense({units: 1}));
   model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'});
 
@@ -705,11 +705,11 @@ async function r4() {
   
 
   // Anzahl Trainingsepochen
-  const epochs = 200; 
+  const epochs = 70; 
 
   await model.fit(xsTensor, ysTensor, {
     epochs: epochs,
-    batchSize: 16,
+    batchSize: 64,
     shuffle: true,
     callbacks: createProgressCallback(epochs)
   });
