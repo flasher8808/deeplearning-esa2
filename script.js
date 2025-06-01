@@ -1,5 +1,19 @@
 //console.log('Hello TensorFlow');
 
+// Anzahl Trainingsdatensätze
+const count = 100;
+
+// Wertebereich der Daten (x-Achse)
+const min = -2;
+const max = 2;
+
+
+
+//let xValues = generateRandomNumbers(count, min, max);
+let xValues = generateLinearSpace(count, min, max);
+//shuffleArray(xValues);
+
+
 
 // Zufallszahlen erzeugen
 function generateRandomNumbers(count, min, max) {
@@ -12,14 +26,47 @@ function generateRandomNumbers(count, min, max) {
   return randomNumbers;
 }
 
-// Anzahl Trainingsdatensätze
-const count = 100;
+// Gleichverteilte Zahlen erzeugen
+function generateLinearSpace(numValues, min, max) {
+  const arr = [];
+  const step = (max - min) / (numValues - 1);
+  for (let i = 0; i < numValues; i++) {
+    arr.push(min + i * step);
+  }
+  console.log(arr);
+  return arr;
+}
 
-// Wertebereich der Trainingsdaten (x)
-const min = -2;
-const max = 2;
+// Array zufällig mischen
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
 
-const xValues = generateRandomNumbers(count, min, max);
+// Initiales Array aufteilen
+function splitAlternating(array) {
+  const arr1 = [];
+  const arr2 = [];
+  array.forEach((value, index) => {
+    if (index % 2 === 0) {
+      arr1.push(value);
+    } else {
+      arr2.push(value);
+    }
+  });
+  return [arr1, arr2];
+}
+
+
+let [trainingsdaten, testdaten] = splitAlternating(xValues);
+
+
+
+
+
+
 let yValues = [];
 for (let i = 0; i < count; i++) {
   yValues.push(calcYValue(xValues[i]));
@@ -34,8 +81,8 @@ function calcYValue (xval) {
 
 
 
-let trainingsdaten = xValues.slice(count/2);
-let testdaten = xValues.slice(0, count/2);
+//let trainingsdaten = xValues.slice(count/2);
+//let testdaten = xValues.slice(0, count/2);
 
 let trainingsdatenY = [];
 let testdatenY = [];
@@ -217,7 +264,7 @@ const ChartmitRauschen = new Chart(ctx_mitRauschen, {
 
 
 // Aufruf R2
-document.addEventListener('DOMContentLoaded', r4);
+document.addEventListener('DOMContentLoaded', r2);
 
 
 async function r2() {
@@ -244,7 +291,7 @@ async function r2() {
   model.add(tf.layers.dense({units: 128, activation: 'relu'}));
   model.add(tf.layers.dense({units: 128, activation: 'relu'}));
   model.add(tf.layers.dense({units: 1}));
-  model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'});
+  model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'}); //metrics fehlen?
 
   // 3. Training
   const progressBar = document.getElementById('progress-bar');
@@ -451,7 +498,7 @@ async function r2() {
 
 
   // Aufruf R3
-  r3();
+  //r3();
 }
 
 
@@ -473,7 +520,7 @@ async function r3() {
   model.add(tf.layers.dense({units: 100, activation: 'relu', inputShape: [1]}));
   model.add(tf.layers.dense({units: 100, activation: 'relu'}));
   model.add(tf.layers.dense({units: 1}));
-  model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'});
+  model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'}); //metrics fehlen?
 
 
   // 3. Training
@@ -696,7 +743,7 @@ async function r4() {
   //model.add(tf.layers.dense({units: 512, activation: 'relu'}));
   //model.add(tf.layers.dense({units: 512, activation: 'relu'}));
   model.add(tf.layers.dense({units: 1}));
-  model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'});
+  model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'}); //metrics fehlen?
 
   // 3. Training
   const progressBar = document.getElementById('r4-progress-bar');
