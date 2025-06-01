@@ -278,6 +278,8 @@ async function r2() {
     ys.push(calcYValue(x));
   }
   */
+  let r2lossChart;
+  initializeLossChart();
 
   const xsTensor = tf.tensor2d(trainingsdaten, [trainingsdaten.length, 1]);
   const ysTensor = tf.tensor2d(trainingsdatenY, [trainingsdatenY.length, 1]);
@@ -297,9 +299,54 @@ async function r2() {
   const progressBar = document.getElementById('progress-bar');
   const progressText = document.getElementById('progress-text');
 
-
   // Anzahl Trainingsepochen
-  const epochs = 250; 
+  const epochs = 60; 
+
+  // Diagramm für Trainings-Loss
+  function initializeLossChart() {
+    const ctx = document.getElementById('r2-loss-chart').getContext('2d');
+    r2lossChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Loss (Trainingsdaten)',
+            data: [],
+            borderColor: 'rgba(0,119,255,0.8)',
+            //backgroundColor: 'rgba(0,119,255,0.1)',
+            fill: false,
+            tension: 0.2,
+            pointRadius: 0
+          },
+          {
+            label: 'Loss (Testdaten)',
+            data: [],
+            borderColor: 'rgba(255,136,0,0.8)',
+            backgroundColor: 'rgba(255,136,0,0.1)',
+            fill: false,
+            tension: 0.2,
+            pointRadius: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { title: { display: true, text: 'Epoche' } },
+          y: { title: { display: true, text: 'Loss' } }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Loss-Verlauf für Trainings- und Testdaten'
+          }
+        }
+      }
+    });
+  }
+
+
 
   await model.fit(xsTensor, ysTensor, {
     epochs: epochs,
@@ -321,6 +368,12 @@ async function r2() {
         if((epoch + 20) % 20 === 0) {
           console.log(`Epoch ${epoch}: Loss = ${logs.loss.toFixed(5)}`);
         }*/
+        if (r2lossChart) {
+          r2lossChart.data.labels.push(epoch + 1);
+          r2lossChart.data.datasets[0].data.push(logs.loss);
+          r2lossChart.data.datasets[1].data.push(logs.val_loss);  // test/validation loss
+          r2lossChart.update();
+        }
       },
       onTrainEnd: () => {
         progressText.textContent = 'Training abgeschlossen!';
@@ -336,7 +389,7 @@ async function r2() {
   const testLossTensor = tf.losses.meanSquaredError(ysTestTensor, predsTest);
   const testLossValue = (await testLossTensor.data())[0];
   //console.log('Finaler Test Loss:', testLossValue.toFixed(5));
-  document.getElementById("r2-test-loss").textContent = `Finaler Loss auf Trainingsdaten: ${testLossValue.toFixed(5)}`;
+  document.getElementById("r2-test-loss").textContent = `Finaler Loss auf Testdaten: ${testLossValue.toFixed(5)}`;
 
 
   // 4. Daten für Visualisierung vorbereiten
@@ -498,7 +551,7 @@ async function r2() {
 
 
   // Aufruf R3
-  //r3();
+  r3();
 }
 
 
@@ -507,6 +560,9 @@ async function r2() {
 
 
 async function r3() {
+
+  let r3lossChart;
+  initializeLossChart();
 
   const xsTensor = tf.tensor2d(trainingsdaten, [trainingsdaten.length, 1]);
   const ysTensor = tf.tensor2d(trainingsdatenY_rausch, [trainingsdatenY_rausch.length, 1]);
@@ -529,12 +585,57 @@ async function r3() {
 
 
   // Anzahl Trainingsepochen
-  const epochs = 200; 
+  const epochs = 200;
+
+  // Diagramm für Trainings-Loss
+  function initializeLossChart() {
+    const ctx = document.getElementById('r3-loss-chart').getContext('2d');
+    r3lossChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Loss (Trainingsdaten)',
+            data: [],
+            borderColor: 'rgba(0,119,255,0.8)',
+            //backgroundColor: 'rgba(0,119,255,0.1)',
+            fill: false,
+            tension: 0.2,
+            pointRadius: 0
+          },
+          {
+            label: 'Loss (Testdaten)',
+            data: [],
+            borderColor: 'rgba(255,136,0,0.8)',
+            backgroundColor: 'rgba(255,136,0,0.1)',
+            fill: false,
+            tension: 0.2,
+            pointRadius: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { title: { display: true, text: 'Epoche' } },
+          y: { title: { display: true, text: 'Loss' } }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Loss-Verlauf für Trainings- und Testdaten'
+          }
+        }
+      }
+    });
+  }
 
   await model.fit(xsTensor, ysTensor, {
     epochs: epochs,
     batchSize: 32,
     shuffle: true,
+    validationData: [xsTestTensor, ysTestTensor],
     callbacks: createProgressCallback(epochs)
   });
 
@@ -545,9 +646,15 @@ async function r3() {
         progressBar.style.width = percent + '%';
         progressText.textContent = `Training läuft: Epoche ${epoch + 1} / ${totalEpochs} (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
         document.getElementById("r3-train-loss").textContent = `Finaler Loss auf Trainingsdaten: ${logs.loss.toFixed(5)}`;
-
+        /*
         if((epoch + 20) % 20 === 0) {
           console.log(`Epoch ${epoch}: Loss = ${logs.loss.toFixed(5)}`);
+        }*/
+        if (r3lossChart) {
+          r3lossChart.data.labels.push(epoch + 1);
+          r3lossChart.data.datasets[0].data.push(logs.loss);
+          r3lossChart.data.datasets[1].data.push(logs.val_loss);  // test/validation loss
+          r3lossChart.update();
         }
       },
       onTrainEnd: () => {
@@ -564,7 +671,7 @@ async function r3() {
   const testLossTensor = tf.losses.meanSquaredError(ysTestTensor, predsTest);
   const testLossValue = (await testLossTensor.data())[0];
   //console.log('Finaler Test Loss:', testLossValue.toFixed(5));
-  document.getElementById("r3-test-loss").textContent = `Finaler Loss auf Trainingsdaten: ${testLossValue.toFixed(5)}`;
+  document.getElementById("r3-test-loss").textContent = `Finaler Loss auf Testdaten: ${testLossValue.toFixed(5)}`;
 
 
   // 4. Daten für Visualisierung vorbereiten
@@ -730,6 +837,9 @@ async function r3() {
 
 async function r4() {
   
+  let r4lossChart;
+  initializeLossChart();
+
   const xsTensor = tf.tensor2d(trainingsdaten, [trainingsdaten.length, 1]);
   const ysTensor = tf.tensor2d(trainingsdatenY_rausch, [trainingsdatenY_rausch.length, 1]);
   // Tensoren für Loss
@@ -754,10 +864,55 @@ async function r4() {
   // Anzahl Trainingsepochen
   const epochs = 70; 
 
+  // Diagramm für Trainings-Loss
+  function initializeLossChart() {
+    const ctx = document.getElementById('r4-loss-chart').getContext('2d');
+    r4lossChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Loss (Trainingsdaten)',
+            data: [],
+            borderColor: 'rgba(0,119,255,0.8)',
+            //backgroundColor: 'rgba(0,119,255,0.1)',
+            fill: false,
+            tension: 0.2,
+            pointRadius: 0
+          },
+          {
+            label: 'Loss (Testdaten)',
+            data: [],
+            borderColor: 'rgba(255,136,0,0.8)',
+            backgroundColor: 'rgba(255,136,0,0.1)',
+            fill: false,
+            tension: 0.2,
+            pointRadius: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { title: { display: true, text: 'Epoche' } },
+          y: { title: { display: true, text: 'Loss' } }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Loss-Verlauf für Trainings- und Testdaten'
+          }
+        }
+      }
+    });
+  }
+
   await model.fit(xsTensor, ysTensor, {
     epochs: epochs,
     batchSize: 64,
     shuffle: true,
+    validationData: [xsTestTensor, ysTestTensor],
     callbacks: createProgressCallback(epochs)
   });
 
@@ -768,8 +923,11 @@ async function r4() {
         progressBar.style.width = percent + '%';
         progressText.textContent = `Training läuft: Epoche ${epoch + 1} / ${totalEpochs} (${percent.toFixed(1)}%) — Loss: ${logs.loss.toFixed(5)}`;
         document.getElementById("r4-train-loss").textContent = `Finaler Loss auf Trainingsdaten: ${logs.loss.toFixed(5)}`;
-        if((epoch + 20) % 20 === 0) {
-          console.log(`Epoch ${epoch}: Loss = ${logs.loss.toFixed(5)}`);
+        if (r4lossChart) {
+          r4lossChart.data.labels.push(epoch + 1);
+          r4lossChart.data.datasets[0].data.push(logs.loss);
+          r4lossChart.data.datasets[1].data.push(logs.val_loss);  // test/validation loss
+          r4lossChart.update();
         }
       },
       onTrainEnd: () => {

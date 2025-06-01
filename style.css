@@ -71,7 +71,7 @@ html, body {
 #progress-bar {
     width: 0%; 
     height: 30px; 
-    background-color: #76c7c0;
+    background-color: rgba(0,119,255,0.8);
     border-radius: 10px;
     /*transition: width 0.3s ease;*/
 }
@@ -87,7 +87,7 @@ html, body {
 #r3-progress-bar {
     width: 0%; 
     height: 30px; 
-    background-color: #76c7c0;
+    background-color: rgba(0,119,255,0.8);
     border-radius: 10px;
 }
 
@@ -102,7 +102,7 @@ html, body {
 #r4-progress-bar {
     width: 0%; 
     height: 30px; 
-    background-color: #76c7c0;
+    background-color: rgba(0,119,255,0.8);
     border-radius: 10px;
 }
 
@@ -120,34 +120,38 @@ html, body {
     display: none;
 }
 
+
 #r2-train-loss {
     display: none;
-    margin-left: 45px;
+    margin-left: 50px;
+    margin-top: 75px;
 }
 
 #r2-test-loss {
     display: none;
-    margin-left: 45px;
+    margin-left: 50px;
 }
 
 #r3-train-loss {
     display: none;
-    margin-left: 45px;
+    margin-left: 50px;
+    margin-top: 75px;
 }
 
 #r3-test-loss {
     display: none;
-    margin-left: 45px;
+    margin-left: 50px;
 }
 
 #r4-train-loss {
     display: none;
-    margin-left: 45px;
+    margin-left: 50px;
+    margin-top: 75px;
 }
 
 #r4-test-loss {
     display: none;
-    margin-left: 45px;
+    margin-left: 50px;
 }
 
 
@@ -157,6 +161,26 @@ html, body {
 .r4 {
     display: flex;
 }
+
+#r2-stats {
+    display: flex;
+}
+
+#r3-stats {
+    display: flex;
+}
+
+#r4-stats {
+    display: flex;
+}
+
+.loss-chart {
+    max-height: 200px !important;
+    max-width: 800px !important;
+    min-height: 200px !important;
+    min-width: 800px !important;
+}
+
 
 
 .disc-r2 {
