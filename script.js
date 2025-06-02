@@ -837,8 +837,6 @@ async function r4() {
   const model = tf.sequential();
   model.add(tf.layers.dense({inputShape: [1], units: 800, activation: 'relu'}));
   model.add(tf.layers.dense({units: 800, activation: 'relu'}));
-  //model.add(tf.layers.dense({units: 512, activation: 'relu'}));
-  //model.add(tf.layers.dense({units: 512, activation: 'relu'}));
   model.add(tf.layers.dense({units: 1}));
   model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'}); //metrics fehlen?
 
@@ -849,7 +847,7 @@ async function r4() {
   
 
   // Anzahl Trainingsepochen
-  const epochs = 300; 
+  const epochs = 200; 
 
   // Diagramm für Trainings-Loss
   function initializeLossChart() {
