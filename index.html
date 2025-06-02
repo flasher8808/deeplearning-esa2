@@ -4,10 +4,10 @@
   <title>Deep Learning - EA 2</title>
   
   <!-- Import TensorFlow.js -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+  <script src="tf.min.js"></script>
   <!-- Import tfjs-vis -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>-->
+  <script src="chart.js"></script>
   <link href='https://fonts.googleapis.com/css?family=Varela Round' rel='stylesheet'>
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="icon" type="image/x-icon" href="vfh_logo_bildm.ico">
@@ -144,9 +144,10 @@
       </div>
       <p>Overfitting kann in diesem Aufgabenteil nicht entstehen, da alle Trainingsdaten exakt auf der zu gesuchten Funktion liegen. Overfitting tritt erst auf, wenn die Trainingsdaten ein gewisses Rauschen aufweisen und nicht mehr perfekt auf der gesuchten Funktion liegen. Overfitting beschreibt dann den Zustand, wenn das Modell die Trainingsdaten zu genau nimmt und somit von der eigentlich gesuchten Funktion abweicht.</p>
       <h2>R3</h2>
-      <p>Bei Aufgabe 3 soll das neuronale Netz bestmöglich generalisieren. In 9 von 10 Versuchen ist der Loss auf den Testdaten kleiner als der Loss auf den Trainingsdaten. Der kleinere Loss auf den Testdaten zeigt, dass das Modell gut auf neue Daten reagiert und nicht nur auswendig lernt. Um das Modell robuster zu machen wurden sowohl Dropouts genutzt, als auch durch Regularisierung die Gewichte begrenzt.</p>
+      <p>Bei Aufgabe 3 soll das neuronale Netz bestmöglich generalisieren. In 9 von 10 Versuchen ist der Loss auf den Testdaten kleiner als der Loss auf den Trainingsdaten. Der kleinere Loss auf den Testdaten zeigt, dass das Modell gut auf neue Daten reagiert und nicht nur auswendig lernt. Um das Modell robuster zu gestalten wurden sowohl Dropouts genutzt, als auch durch Regularisierung die Gewichte begrenzt.</p>
       <p>Verwendete Parameter: ...</p>
       <h2>R4</h2>
+      <p>Bei Aufgabe 4 sollte Overfitting bewusst provziert werden. Um das Phänomen besser darzustellen wurden dafür die Trainingsdaten des aktuellen Trials ausgedünnt.</p>
       <p>Wenn nur sehr wenige Datensätze (z.b. N = 20) lässt sich das Phänomen des Overfittings sehr schön zeigen, mit steigender Anzahl an Datensätzen wird dies immer schwieriger.</p>
       <p>Verwendete Parameter: ...</p>
       <p>Bei Bildern, die aus dem Trainingsdatensatz stammen, erfolgte in allen Stichproben eine korrekte Klassifikation mit einer sehr hohen Wahrscheinlichkeit. Werden eigene Bilder von gleichen Objekten hochgeladen  (Beispiel: Goldfisch, Marienkäfer oder Sicherheitsnadel), dann wird ebenfalls mit sehr hoher Wahrscheinlichkeit die korrekte Klassifikation vorgenommen.

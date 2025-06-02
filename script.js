@@ -792,15 +792,43 @@ async function r3() {
 }
 
 
+function removeRandomItemsFromBoth(arr1, arr2, count) {
+  if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
+    throw new Error("Beide Argumente müssen Arrays sein.");
+  }
+  if (arr1.length !== arr2.length) {
+    throw new Error("Beide Arrays müssen die gleiche Länge haben.");
+  }
+  if (count < 0 || count > arr1.length) {
+    throw new Error("Anzahl der zu löschenden Elemente ist ungültig.");
+  }
 
+  // Generiere zufällige eindeutige Indizes zum Entfernen
+  const indicesToRemove = new Set();
+  while (indicesToRemove.size < count) {
+    const randomIndex = Math.floor(Math.random() * arr1.length);
+    indicesToRemove.add(randomIndex);
+  }
+
+  // Filtere beide Arrays anhand der Zufallsindizes
+  const filteredArr1 = arr1.filter((_, index) => !indicesToRemove.has(index));
+  const filteredArr2 = arr2.filter((_, index) => !indicesToRemove.has(index));
+
+  return [filteredArr1, filteredArr2];
+}
 
 async function r4() {
   
+  // Trainingsdaten verkleinern
+
+  const [newArr, newArrY] = removeRandomItemsFromBoth(trainingsdaten, trainingsdatenY_rausch, 35);
+  console.log(newArr);
+
   let r4lossChart;
   initializeLossChart();
 
-  const xsTensor = tf.tensor2d(trainingsdaten, [trainingsdaten.length, 1]);
-  const ysTensor = tf.tensor2d(trainingsdatenY_rausch, [trainingsdatenY_rausch.length, 1]);
+  const xsTensor = tf.tensor2d(newArr, [newArr.length, 1]);
+  const ysTensor = tf.tensor2d(newArrY, [newArrY.length, 1]);
   // Tensoren für Loss
   const xsTestTensor = tf.tensor2d(testdaten, [testdaten.length, 1]);
   const ysTestTensor = tf.tensor2d(testdatenY, [testdatenY.length, 1]);
@@ -821,7 +849,7 @@ async function r4() {
   
 
   // Anzahl Trainingsepochen
-  const epochs = 70; 
+  const epochs = 300; 
 
   // Diagramm für Trainings-Loss
   function initializeLossChart() {
@@ -911,19 +939,19 @@ async function r4() {
 
   // Werte Originalfunktion
   //trainingsdaten = trainingsdaten.sort(function(a, b){return a - b});
-  const originalPoints = trainingsdaten.map((x, index) => ({x: x, y: trainingsdatenY_rausch[index]}));
+  const originalPoints = newArr.map((x, index) => ({x: x, y: newArrY[index]}));
   //console.log(originalPoints);
 
 
   // Werte Modellvorhersage
   // Damit nicht jeden Punkt asynchron abfragen (zu langsam), machen wir batch-wise Prediction
-  const xTensorForPred = tf.tensor2d(trainingsdaten, [trainingsdaten.length, 1]);
+  const xTensorForPred = tf.tensor2d(newArr, [newArr.length, 1]);
   const yPredTensor = model.predict(xTensorForPred);
   const yPreds = await yPredTensor.array();
   xTensorForPred.dispose();
   yPredTensor.dispose();
 
-  const predictedPoints = trainingsdaten.map((x, i) => ({x: x, y: yPreds[i][0]}));
+  const predictedPoints = newArr.map((x, i) => ({x: x, y: yPreds[i][0]}));
 
   xsTensor.dispose();
   ysTensor.dispose();
