@@ -120,10 +120,11 @@
     <div class="discussion">
       <h1>Diskussion</h1>
       <h2>R2</h2>
-      <p>Grundsätzlich erreicht das trainierte Modell eine gute Approximation an die gegebene Funktion. In seltenen Fällen werden Teile der Funktion schlecht nach-empfunden - einen direkten Zusammenhang zu den Trainingsdaten konnte ich nicht erkennen. Beide Screenshots sind mit dem gleichen Modell erstellt nur jeweils mit verschiedenen Trainingsdaten trainiert.</p>
+      <p>Grundsätzlich erreicht das trainierte Modell eine gute Approximation an die gegebene Funktion. In seltenen Fällen werden Teile der Funktion schlecht nach-empfunden - einen direkten Zusammenhang zu den Trainingsdaten konnte ich nicht erkennen. Folgende Beispiele sollen dies verdeutlichen. Beide Screenshots sind mit dem gleichen Modell erstellt nur jeweils mit verschiedenen Trainingsdaten trainiert.</p>
+      <p>Verwendete Parameter: ...</p>
       <div class="r1">
         <div>
-          <p>Beispiel für eine (sehr) gute Approximation:</p>
+          <p>TODO NEUE SCREENSHOTS Beispiel für eine (sehr) gute Approximation:</p>
           <div class="image-container">
             <img class="disc-r2 image thumbnail" src="images/a2-good.png" alt="Aufgabe A2 - gute Approximation">
             <div class="overlay">
@@ -132,7 +133,7 @@
           </div>
         </div>
         <div>
-          <p>Beispiel für eine fehlerhafte Approximation:</p>
+          <p>TODO NEUE SCREENSHOTS Beispiel für eine fehlerhafte Approximation:</p>
           <div class="image-container">
             <img class="disc-r2 image thumbnail" src="images/a2-faulty.png" alt="Aufgabe A2 - fehlerhafte Approximation">
             <div class="overlay">
@@ -141,11 +142,13 @@
           </div>
         </div>
       </div>
-      <p>Overfitting kann in diesem Aufgabenteil nicht entstehen, da alle Trainingsdaten exakt auf der zu gesuchten Funktion liegen. Overfitting tritt erst auf, wenn die Trainingsdaten ein gewisses Rauschen aufweisen und nicht mehr perfekt auf der gesuchten Funktion liegen. Overfitting beschreibt dann den Zustand, wenn das Modell die Trainingsdaten zu genau nimmt und somit von der eigentlich gesuchten Funktion abweicht. An dieser Stelle kann das Modell nicht mehr gut generalisieren.</p>
+      <p>Overfitting kann in diesem Aufgabenteil nicht entstehen, da alle Trainingsdaten exakt auf der zu gesuchten Funktion liegen. Overfitting tritt erst auf, wenn die Trainingsdaten ein gewisses Rauschen aufweisen und nicht mehr perfekt auf der gesuchten Funktion liegen. Overfitting beschreibt dann den Zustand, wenn das Modell die Trainingsdaten zu genau nimmt und somit von der eigentlich gesuchten Funktion abweicht.</p>
       <h2>R3</h2>
-      <p>Bei Bildern, die aus dem Trainingsdatensatz stammen, erfolgte in allen Stichproben eine korrekte Klassifikation mit einer sehr hohen Wahrscheinlichkeit. Werden eigene Bilder von gleichen Objekten hochgeladen  (Beispiel: Goldfisch, Marienkäfer oder Sicherheitsnadel), dann wird ebenfalls mit sehr hoher Wahrscheinlichkeit die korrekte Klassifikation vorgenommen.
-      Sind verschiedene Objekte auf einem Bild zu erkennen, dann sinkt die Wahrscheinlichkeit einer korrekten Klassifikation erheblich und es kommt in einigen Fällen zu falschen Zuordnungen. Bei dem dritten Beispiel der korrekten Zuordnung beträgt die Wahrscheinlichkeit, dass es sich um eine Küste handelt nur knapp 19%. Es ist somit eine gewisse Unsicherheit damit verbunden. Bilder von / mit Personen sind besonders schwierig vom Modell zu klassifizieren - aus Datenschutzgründen soll kein Beispiel gezeigt werden.</p>
+      <p>Bei Aufgabe 3 soll das neuronale Netz bestmöglich generalisieren. In 9 von 10 Versuchen ist der Loss auf den Testdaten kleiner als der Loss auf den Trainingsdaten. Der kleinere Loss auf den Testdaten zeigt, dass das Modell gut auf neue Daten reagiert und nicht nur auswendig lernt. Um das Modell robuster zu machen wurden sowohl Dropouts genutzt, als auch durch Regularisierung die Gewichte begrenzt.</p>
+      <p>Verwendete Parameter: ...</p>
       <h2>R4</h2>
+      <p>Wenn nur sehr wenige Datensätze (z.b. N = 20) lässt sich das Phänomen des Overfittings sehr schön zeigen, mit steigender Anzahl an Datensätzen wird dies immer schwieriger.</p>
+      <p>Verwendete Parameter: ...</p>
       <p>Bei Bildern, die aus dem Trainingsdatensatz stammen, erfolgte in allen Stichproben eine korrekte Klassifikation mit einer sehr hohen Wahrscheinlichkeit. Werden eigene Bilder von gleichen Objekten hochgeladen  (Beispiel: Goldfisch, Marienkäfer oder Sicherheitsnadel), dann wird ebenfalls mit sehr hoher Wahrscheinlichkeit die korrekte Klassifikation vorgenommen.
       Sind verschiedene Objekte auf einem Bild zu erkennen, dann sinkt die Wahrscheinlichkeit einer korrekten Klassifikation erheblich und es kommt in einigen Fällen zu falschen Zuordnungen. Bei dem dritten Beispiel der korrekten Zuordnung beträgt die Wahrscheinlichkeit, dass es sich um eine Küste handelt nur knapp 19%. Es ist somit eine gewisse Unsicherheit damit verbunden. Bilder von / mit Personen sind besonders schwierig vom Modell zu klassifizieren - aus Datenschutzgründen soll kein Beispiel gezeigt werden.</p>
       <p>Bei den falsch klassifizierten Bildern kann es unterschiedliche Gründe dafür geben:
@@ -162,12 +165,13 @@
       <p>
         Die Web-Anwendung basiert auf einer HTML-Datei, die mit CSS gestylt und JavaScript interaktiv erweitert wurde. Zusätzlich wurden folgende Frameworks verwendet:
         <ul>
-          <li>TensorFlow.js: Erstellen und trainieren eigener neuronaler Netze zur Vorhersage von Funktionswerten einer mathematischen FUnktion</li>
+          <li>TensorFlow.js: Erstellen und trainieren eigener neuronaler Netze zur Vorhersage von Funktionswerten einer mathematischen Funktion</li>
           <li>chart.js: Darstellung der Funktionswerte in Diagrammen</li>
         </ul>
       </p>
       
       <h2>Fachlich</h2>
+      <p>In der Anwendung werden keine gespeicherten Modelle verwendet. Bei jedem Aufruf der Webseite werden die definierten Modelle für R2, R3 und R4 jeweils neu (mit den gerade aktuellen Trainingsdaten) trainiert und für die Vorhersagen genutzt. Trotz der vielen Trials während der Entwicklung und Optimierung der Modelle, kann es passieren, dass der aktuelle Zustand in seltenen Fällen eine nicht optimale Lösung der Aufgabe darstellt. Mit einem Reload der Webseite wird zu hoher Wahrscheinlichkeit ein besseres Ergebnis erzielt.</p>
       <p>
         Die Anwendung wurde iterativ entwickelt:
         <ul>
@@ -175,6 +179,7 @@
           <li>Erweiterung durch Anbindung von tensorflow.js sowie erstem Modell zur Vorhersage von Funktionswerten (A2)</li>
           <li>Übernahme der HTML-Basis (inkl. CSS) aus EA 1</li>
           <li>Implementierung der Modelle für A3 und A4</li>
+          <li>Implementierung des Diagramms für den Loss zur besseren Kontrolle über die Fortschritte der Modelle</li>
           <li>Optimierung der Modelle um Aufgabenstellung bestmöglich zu erreichen</li>
           <li>Optimierung der grafischen Darstellung</li>
         </ul>

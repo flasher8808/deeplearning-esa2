@@ -122,49 +122,6 @@ let testdatenY_rausch = addGaussianNoise(testdatenY, variance);
 
 
 
-// Visualisierung Diagramm oben
-/*
-const ctx = document.getElementById('chart_values').getContext('2d');
-const myChart = new Chart(ctx, {
-  type: 'scatter',
-  data: {
-    datasets: [{
-      label: 'Random Values',
-      data: xValues.map((value, index) => ({ x: value, y: calcYValue(value) })),
-      backgroundColor: 'rgba(75, 192, 192, 0.8)',
-      pointRadius: 3
-    }]
-  },
-  options: {
-    plugins: {
-      title: {
-          display: true,
-          text: 'Zufällige x-Wert mit berechneten y-Werten'
-      }
-    },
-    scales: {
-      x: {
-        type: 'linear',
-        position: 'bottom',
-        title: {
-          display: true,
-          text: 'x-Achse'
-        }
-      },
-      y: {
-        beginAtZero: true,
-        min: -2,
-        max: 3,
-        title: {
-          display: true,
-          text: 'y-Achse'
-        }
-      }
-    }
-  }
-});
-*/
-
 // R1 - Visualisierung Diagramm ohne Rauschen links
 const ctx_ohneRauschen = document.getElementById('r1-ohneRauschen').getContext('2d');
 const ChartohneRauschen = new Chart(ctx_ohneRauschen, {
@@ -573,8 +530,10 @@ async function r3() {
 
   // 2. Modell definieren
   const model = tf.sequential();
-  model.add(tf.layers.dense({units: 100, activation: 'relu', inputShape: [1]}));
-  model.add(tf.layers.dense({units: 100, activation: 'relu'}));
+  const regularizer = tf.regularizers.l2({l2: 0.001});
+  model.add(tf.layers.dense({inputShape: [1], units: 100, activation: 'relu', kernelRegularizer: regularizer}));
+  model.add(tf.layers.dropout({rate: 0.3}));
+  model.add(tf.layers.dense({units: 100, activation: 'relu', kernelRegularizer: regularizer}));
   model.add(tf.layers.dense({units: 1}));
   model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'}); //metrics fehlen?
 
@@ -585,7 +544,7 @@ async function r3() {
 
 
   // Anzahl Trainingsepochen
-  const epochs = 200;
+  const epochs = 120;
 
   // Diagramm für Trainings-Loss
   function initializeLossChart() {
@@ -944,7 +903,7 @@ async function r4() {
   const testLossTensor = tf.losses.meanSquaredError(ysTestTensor, predsTest);
   const testLossValue = (await testLossTensor.data())[0];
   //console.log('Finaler Test Loss:', testLossValue.toFixed(5));
-  document.getElementById("r4-test-loss").textContent = `Finaler Loss auf Trainingsdaten: ${testLossValue.toFixed(5)}`;
+  document.getElementById("r4-test-loss").textContent = `Finaler Loss auf Testdaten: ${testLossValue.toFixed(5)}`;
 
 
 
