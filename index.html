@@ -121,7 +121,14 @@
       <h1>Diskussion</h1>
       <h2>R2</h2>
       <p>Grundsätzlich erreicht das trainierte Modell eine gute Approximation an die gegebene Funktion. In seltenen Fällen werden Teile der Funktion schlecht nach-empfunden - einen direkten Zusammenhang zu den Trainingsdaten konnte ich nicht erkennen. Folgende Beispiele sollen dies verdeutlichen. Beide Screenshots sind mit dem gleichen Modell erstellt nur jeweils mit verschiedenen Trainingsdaten trainiert.</p>
-      <p>Verwendete Parameter: ...</p>
+      <p>Verwendete Parameter:
+        <ul>
+          <li>3 Hidden Layer (256, 256, 128 Units)</li>
+          <li>Aktivierungsfunktion: reLu</li>
+          <li>Optimizer: adam, Learning Rate: 0.01, Loss: MSE</li>
+          <li>Trainingsepochen: 60</li>
+        </ul>
+      </p>
       <div class="r1">
         <div>
           <p>TODO NEUE SCREENSHOTS Beispiel für eine (sehr) gute Approximation:</p>
@@ -145,18 +152,25 @@
       <p>Overfitting kann in diesem Aufgabenteil nicht entstehen, da alle Trainingsdaten exakt auf der zu gesuchten Funktion liegen. Overfitting tritt erst auf, wenn die Trainingsdaten ein gewisses Rauschen aufweisen und nicht mehr perfekt auf der gesuchten Funktion liegen. Overfitting beschreibt dann den Zustand, wenn das Modell die Trainingsdaten zu genau nimmt und somit von der eigentlich gesuchten Funktion abweicht.</p>
       <h2>R3</h2>
       <p>Bei Aufgabe 3 soll das neuronale Netz bestmöglich generalisieren. In 9 von 10 Versuchen ist der Loss auf den Testdaten kleiner als der Loss auf den Trainingsdaten. Der kleinere Loss auf den Testdaten zeigt, dass das Modell gut auf neue Daten reagiert und nicht nur auswendig lernt. Um das Modell robuster zu gestalten wurden sowohl Dropouts genutzt, als auch durch Regularisierung die Gewichte begrenzt.</p>
-      <p>Verwendete Parameter: ...</p>
-      <h2>R4</h2>
-      <p>Bei Aufgabe 4 sollte Overfitting bewusst provziert werden. Um das Phänomen besser darzustellen wurden dafür die Trainingsdaten des aktuellen Trials ausgedünnt.</p>
-      <p>Wenn nur sehr wenige Datensätze (z.b. N = 20) lässt sich das Phänomen des Overfittings sehr schön zeigen, mit steigender Anzahl an Datensätzen wird dies immer schwieriger.</p>
-      <p>Verwendete Parameter: ...</p>
-      <p>Bei Bildern, die aus dem Trainingsdatensatz stammen, erfolgte in allen Stichproben eine korrekte Klassifikation mit einer sehr hohen Wahrscheinlichkeit. Werden eigene Bilder von gleichen Objekten hochgeladen  (Beispiel: Goldfisch, Marienkäfer oder Sicherheitsnadel), dann wird ebenfalls mit sehr hoher Wahrscheinlichkeit die korrekte Klassifikation vorgenommen.
-      Sind verschiedene Objekte auf einem Bild zu erkennen, dann sinkt die Wahrscheinlichkeit einer korrekten Klassifikation erheblich und es kommt in einigen Fällen zu falschen Zuordnungen. Bei dem dritten Beispiel der korrekten Zuordnung beträgt die Wahrscheinlichkeit, dass es sich um eine Küste handelt nur knapp 19%. Es ist somit eine gewisse Unsicherheit damit verbunden. Bilder von / mit Personen sind besonders schwierig vom Modell zu klassifizieren - aus Datenschutzgründen soll kein Beispiel gezeigt werden.</p>
-      <p>Bei den falsch klassifizierten Bildern kann es unterschiedliche Gründe dafür geben:
+      <p>Verwendete Parameter:
         <ul>
-          <li>Trainingsdaten enthalten nur ein bestimmtes Set an Objekten / Klassifikationen -> Wird ein Bild mit unbekannten Dingen gezeigt (Beispiel: Planet Erde), wird nur bestmöglichste Klasse gefunden was dennoch falsch ist</li>
-          <li>Die Trainingsdaten des Modells enthalten viele Bilder, auf denen nicht nur ein Objekt zu sehen ist, sondern mehrere und mit der Bezeichnung keine klare Zuordnung vorgenommen werden kann (Beispiel: n04116512_rubber_eraser.JPEG -> zusehen auch Bleistift, Notenbuch, Notenständer)</li>
-          <li>Manche Gegenstände sind in "falscher" Größe / Relation dargestellt (Beispiel: n04127249_safety_pin.JPEG)</li>
+          <li>2 Hidden Layer (100, 100 Units)</li>
+          <li>Regularizer für L2-Gewichte: 0.001</li>
+          <li>Dropout zur besseren Generalisierung mit Rate: 0.3</li>
+          <li>Aktivierungsfunktion: reLu</li>
+          <li>Optimizer: adam, Learning Rate: 0.01, Loss: MSE</li>
+          <li>Trainingsepochen: 120</li>
+        </ul>
+      </p>
+      <h2>R4</h2>
+      <p>Bei Aufgabe 4 sollte Overfitting bewusst provziert werden. Um das Phänomen besser darzustellen, wurden dafür die Trainingsdaten des aktuellen Trials ausgedünnt.</p>
+      <p>Wenn nur sehr wenige Datensätze (z.b. N = 15) vorhanden sind, lässt sich das Phänomen des Overfittings sehr schön zeigen. Mit steigender Anzahl an Datensätzen wird dies immer schwieriger.</p>
+      <p>Verwendete Parameter:
+        <ul>
+          <li>2 Hidden Layer (800, 800 Units)</li>
+          <li>Aktivierungsfunktion: reLu</li>
+          <li>Optimizer: adam, Learning Rate: 0.01, Loss: MSE</li>
+          <li>Trainingsepochen: 200</li>
         </ul>
       </p>
     </div>

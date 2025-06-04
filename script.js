@@ -247,7 +247,7 @@ async function r2() {
   // 2. Modell definieren
   const model = tf.sequential();
   model.add(tf.layers.dense({inputShape: [1], units: 256, activation: 'relu'}));
-  model.add(tf.layers.dense({units: 128, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 256, activation: 'relu'}));
   model.add(tf.layers.dense({units: 128, activation: 'relu'}));
   model.add(tf.layers.dense({units: 1}));
   model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'}); //metrics fehlen?
