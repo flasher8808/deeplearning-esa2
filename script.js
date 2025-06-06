@@ -835,8 +835,8 @@ async function r4() {
 
   // 2. Modell definieren
   const model = tf.sequential();
-  model.add(tf.layers.dense({inputShape: [1], units: 800, activation: 'relu'}));
-  model.add(tf.layers.dense({units: 800, activation: 'relu'}));
+  model.add(tf.layers.dense({inputShape: [1], units: 200, activation: 'relu'}));
+  model.add(tf.layers.dense({units: 200, activation: 'relu'}));
   model.add(tf.layers.dense({units: 1}));
   model.compile({optimizer: tf.train.adam(0.01), loss: 'meanSquaredError'}); //metrics fehlen?
 
@@ -895,7 +895,7 @@ async function r4() {
 
   await model.fit(xsTensor, ysTensor, {
     epochs: epochs,
-    batchSize: 64,
+    batchSize: 8,
     shuffle: true,
     validationData: [xsTestTensor, ysTestTensor],
     callbacks: createProgressCallback(epochs)
