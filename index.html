@@ -120,8 +120,7 @@
     <div class="discussion">
       <h1>Diskussion</h1>
       <h2>R2</h2>
-      <p>Grundsätzlich erreicht das trainierte Modell eine gute Approximation an die gegebene Funktion. In seltenen Fällen werden Teile der Funktion schlecht nach-empfunden - einen direkten Zusammenhang zu den Trainingsdaten konnte ich nicht erkennen. Folgende Beispiele sollen dies verdeutlichen. Beide Screenshots sind mit dem gleichen Modell erstellt nur jeweils mit verschiedenen Trainingsdaten trainiert.</p>
-      <p>Verwendete Parameter:
+      <p>Einstellungen und verwendete Parameter des Modells:
         <ul>
           <li>3 Hidden Layer (256, 256, 128 Units)</li>
           <li>Aktivierungsfunktion: reLu</li>
@@ -130,6 +129,7 @@
           <li>Trainingsepochen: 60</li>
         </ul>
       </p>
+      <p>Grundsätzlich erreicht das trainierte Modell eine gute Approximation an die gegebene Funktion. In seltenen Fällen werden Teile der Funktion schlecht nach-empfunden - einen direkten Zusammenhang zu den Trainingsdaten konnte ich nicht erkennen. Folgende Beispiele sollen dies verdeutlichen. Beide Screenshots sind mit dem gleichen Modell erstellt.</p>
       <div class="r1">
         <div>
           <p>Beispiel für eine (sehr) gute Approximation:</p>
@@ -150,10 +150,9 @@
           </div>
         </div>
       </div>
-      <p>Overfitting kann in diesem Aufgabenteil nicht entstehen, da alle Trainingsdaten exakt auf der zu gesuchten Funktion liegen. Overfitting tritt erst auf, wenn die Trainingsdaten ein gewisses Rauschen aufweisen und nicht mehr perfekt auf der gesuchten Funktion liegen. Overfitting beschreibt dann den Zustand, wenn das Modell die Trainingsdaten zu genau nimmt und somit von der eigentlich gesuchten Funktion abweicht.</p>
+      <p>Die Einstellungen und Parameter des Modells wurden nur leicht modifiziert, um noch etwas bessere Ergebnisse zu erreichen. Overfitting kann in diesem Aufgabenteil nicht entstehen, da alle Trainingsdaten exakt auf der Ground Truth liegen. Overfitting tritt erst auf, wenn die Trainingsdaten ein gewisses Rauschen aufweisen und nicht mehr perfekt auf der gesuchten Funktion liegen. Overfitting beschreibt dann den Zustand, wenn das Modell die Trainingsdaten zu genau nimmt und somit von der eigentlich gesuchten Funktion abweicht.</p>
       <h2>R3</h2>
-      <p>Bei Aufgabe 3 soll das neuronale Netz bestmöglich generalisieren. In 9 von 10 Versuchen ist der Loss auf den Testdaten kleiner als der Loss auf den Trainingsdaten. Der kleinere Loss auf den Testdaten zeigt, dass das Modell gut auf neue Daten reagiert und nicht nur auswendig lernt. Um das Modell robuster zu gestalten wurden sowohl Dropouts genutzt, als auch durch Regularisierung die Gewichte begrenzt.</p>
-      <p>Verwendete Parameter:
+      <p>Einstellungen und verwendete Parameter des Modells:
         <ul>
           <li>2 Hidden Layer (100, 100 Units)</li>
           <li>Regularizer für L2-Gewichte: 0.001</li>
@@ -164,16 +163,9 @@
           <li>Trainingsepochen: 120</li>
         </ul>
       </p>
+      <p>Bei Aufgabe 3 soll das neuronale Netz bestmöglich generalisieren. In 9 von 10 Versuchen ist der Loss auf den Testdaten kleiner als der Loss auf den Trainingsdaten. Der kleinere Loss auf den Testdaten zeigt, dass das Modell gut auf unbekannte Daten reagiert und nicht nur auswendig lernt. Um das Modell robuster zu gestalten wurden sowohl Dropouts genutzt, als auch durch Regularisierung die Gewichte begrenzt.</p>
       <p>Beispiel für eine gute Generalisierung:</p>
       <img src="images/a3.png" alt="Aufgabe A3 - Gute Generalisierung">
-      <!--
-      <div class="image-container">
-        <img class="image thumbnail" src="images/a3.png" alt="Aufgabe A3 - Gute Generalisierung">
-        <div class="overlay">
-            <span class="icon">🔍</span>
-        </div>
-      </div>
-      -->
       <h2>R4</h2>
       <p>Bei Aufgabe 4 sollte Overfitting bewusst provziert werden. Um das Phänomen besser darzustellen, wurden dafür die Trainingsdaten des aktuellen Trials ausgedünnt.</p>
       <p>Wenn nur sehr wenige Datensätze (z.b. N = 15) vorhanden sind, lässt sich das Phänomen des Overfittings sehr schön zeigen. Mit steigender Anzahl an Datensätzen wird dies immer schwieriger.</p>
